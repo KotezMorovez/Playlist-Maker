@@ -24,7 +24,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
             android:text="@string/settings_dark_mode_switch"
-            android:textColor="@color/text_primary" />
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_body"/>
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/darkThemeSwitch"
@@ -43,7 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
             android:text="@string/settings_share_button"
-            android:textColor="@color/text_primary" />
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_body"/>
 
         <ImageView
             android:id="@+id/shareButton"
@@ -63,7 +65,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
             android:text="@string/settings_support_button"
-            android:textColor="@color/text_primary" />
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_body"/>
 
         <ImageView
             android:id="@+id/supportButton"
@@ -83,7 +86,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
             android:text="@string/settings_agreement_button"
-            android:textColor="@color/text_primary" />
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_body"/>
 
         <ImageView
             android:id="@+id/agreementButton"

@@ -17,4 +17,8 @@
     <string name="settings_support_toast">Нажата кнопка поддержки</string>
     <string name="settings_share_toast">Нажата кнопка поделиться</string>
     <string name="settings_agreement_toast">Нажата кнопка соглашения</string>
+
+    <string name="library_title">Медиатека</string>
+
+    <string name="search_title">Поиск</string>
 </resources>

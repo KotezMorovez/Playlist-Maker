@@ -13,7 +13,7 @@
     <dimen name="radius_4x">16dp</dimen>
 
     <dimen name="text_header">22sp</dimen>
-    <dimen name="text_body">22sp</dimen>
+    <dimen name="text_body">16sp</dimen>
 
     <dimen name="settings_icon_size">24dp</dimen>
     <dimen name="settings_block_height">60dp</dimen>

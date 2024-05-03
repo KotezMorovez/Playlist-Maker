@@ -24,30 +24,6 @@ class SettingsActivity : AppCompatActivity() {
             settingsToolbar.setNavigationOnClickListener {
                 this@SettingsActivity.onBackPressedDispatcher.onBackPressed()
             }
-
-            supportButton.setOnClickListener {
-                Toast.makeText(
-                    this@SettingsActivity,
-                    R.string.settings_support_toast,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            shareButton.setOnClickListener {
-                Toast.makeText(
-                    this@SettingsActivity,
-                    R.string.settings_share_toast,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            agreementButton.setOnClickListener {
-                Toast.makeText(
-                    this@SettingsActivity,
-                    R.string.settings_agreement_toast,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
         }
     }
 }

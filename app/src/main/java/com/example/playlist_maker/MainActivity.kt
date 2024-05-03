@@ -25,20 +25,14 @@ class MainActivity : AppCompatActivity() {
             this@MainActivity.supportActionBar?.title = resources.getText(R.string.main_title)
 
             searchButton.setOnClickListener {
-                Toast.makeText(
-                    this@MainActivity,
-                    R.string.main_search_toast,
-                    Toast.LENGTH_SHORT
-                ).show()
+                val intent = Intent(this@MainActivity, SearchActivity::class.java)
+                startActivity(intent)
             }
 
             libraryButton.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View?) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        R.string.main_library_toast,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val intent = Intent(this@MainActivity, LibraryActivity::class.java)
+                    startActivity(intent)
                 }
             })
 
