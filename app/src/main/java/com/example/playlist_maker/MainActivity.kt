@@ -2,8 +2,6 @@ package com.example.playlist_maker
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlist_maker.databinding.ActivityMainBinding
 
@@ -29,12 +27,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
-            libraryButton.setOnClickListener(object : View.OnClickListener {
-                override fun onClick(v: View?) {
-                    val intent = Intent(this@MainActivity, LibraryActivity::class.java)
-                    startActivity(intent)
-                }
-            })
+            libraryButton.setOnClickListener {
+                val intent = Intent(this@MainActivity, LibraryActivity::class.java)
+                startActivity(intent)
+            }
 
             settingsButton.setOnClickListener {
                 val intent = Intent(this@MainActivity, SettingsActivity::class.java)
