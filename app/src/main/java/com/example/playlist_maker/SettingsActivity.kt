@@ -9,7 +9,7 @@ import com.example.playlist_maker.databinding.ActivitySettingsBinding
 class SettingsActivity : AppCompatActivity() {
     companion object {
         private const val SEND_INTENT_TYPE = "text/plain"
-        private const val SEND_INTENT_DATA = "mailto:"
+        private var SEND_INTENT_DATA = "mailto:"
     }
 
     private lateinit var viewBinding: ActivitySettingsBinding
@@ -33,24 +33,22 @@ class SettingsActivity : AppCompatActivity() {
 
             share.setOnClickListener {
                 val text = resources.getText(R.string.share_message).toString()
-                val sendIntent = Intent(Intent.ACTION_SEND)
-                sendIntent.putExtra(Intent.EXTRA_TEXT, text)
-                sendIntent.type = SEND_INTENT_TYPE
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.putExtra(Intent.EXTRA_TEXT, text)
+                shareIntent.type = SEND_INTENT_TYPE
 
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                startActivity(shareIntent)
+                val chooserIntent = Intent.createChooser(shareIntent, null)
+                startActivity(chooserIntent)
             }
 
             support.setOnClickListener {
+                val supportIntent = Intent(Intent.ACTION_SENDTO)
+                val email: Array<String> = arrayOf(resources.getText(R.string.email_to).toString())
                 val message = resources.getText(R.string.email_message)
                 val subject = resources.getText(R.string.email_subject)
-                val supportIntent = Intent(Intent.ACTION_SENDTO)
 
                 supportIntent.data = Uri.parse(SEND_INTENT_DATA)
-                supportIntent.putExtra(
-                    Intent.EXTRA_EMAIL,
-                    arrayOf(resources.getText(R.string.email_to))
-                )
+                supportIntent.putExtra(Intent.EXTRA_EMAIL, email)
                 supportIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
                 supportIntent.putExtra(Intent.EXTRA_TEXT, message)
 
