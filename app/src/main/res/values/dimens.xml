@@ -15,6 +15,9 @@
     <dimen name="text_header">22sp</dimen>
     <dimen name="text_body">16sp</dimen>
 
-    <dimen name="settings_icon_size">24dp</dimen>
+    <dimen name="subtext_body">12sp</dimen>
+
+    <dimen name="icon_size">24dp</dimen>
+
     <dimen name="settings_block_height">60dp</dimen>
 </resources>

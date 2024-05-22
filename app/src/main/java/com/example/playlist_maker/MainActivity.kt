@@ -1,6 +1,7 @@
 package com.example.playlist_maker
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlist_maker.databinding.ActivityMainBinding
@@ -13,6 +14,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+
+        if(Build.VERSION.SDK_INT >= 29) {
+            viewBinding.root.isForceDarkAllowed = false
+        }
 
         initUi()
     }

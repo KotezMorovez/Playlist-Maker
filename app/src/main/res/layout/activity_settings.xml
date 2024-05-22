@@ -1,99 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/secondary">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/settingsToolbar"
+        style="@style/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        app:navigationIcon="@drawable/ic_arrow_back"
-        app:titleTextAppearance="@style/Toolbar.Main"
-        app:titleTextColor="@color/text_primary" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back" />
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/darkTheme"
         android:layout_width="match_parent"
         android:layout_height="@dimen/settings_block_height"
         android:layout_marginHorizontal="@dimen/margin_4x"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settingsToolbar">
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/settings_body"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|start"
-            android:text="@string/settings_dark_mode_switch"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/text_body" />
+            android:layout_weight="1"
+            android:text="@string/settings_dark_mode_switch" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end" />
-    </FrameLayout>
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/share"
         android:layout_width="match_parent"
         android:layout_height="@dimen/settings_block_height"
-        android:layout_marginHorizontal="@dimen/margin_4x">
+        android:layout_marginHorizontal="@dimen/margin_4x"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/darkTheme">
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/settings_body"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|start"
-            android:text="@string/settings_share_button"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/text_body" />
+            android:layout_weight="1"
+            android:text="@string/settings_share_button" />
 
         <ImageView
-            android:layout_width="@dimen/settings_icon_size"
-            android:layout_height="@dimen/settings_icon_size"
-            android:layout_gravity="center_vertical|end"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_share" />
-    </FrameLayout>
+    </LinearLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/support"
         android:layout_width="match_parent"
         android:layout_height="@dimen/settings_block_height"
-        android:layout_marginHorizontal="@dimen/margin_4x">
+        android:layout_marginHorizontal="@dimen/margin_4x"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/share">
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/settings_body"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|start"
-            android:text="@string/settings_support_button"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/text_body" />
+            android:layout_weight="1"
+            android:text="@string/settings_support_button" />
 
         <ImageView
-            android:layout_width="@dimen/settings_icon_size"
-            android:layout_height="@dimen/settings_icon_size"
-            android:layout_gravity="center_vertical|end"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_support" />
-    </FrameLayout>
+    </LinearLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/agreement"
         android:layout_width="match_parent"
         android:layout_height="@dimen/settings_block_height"
-        android:layout_marginHorizontal="@dimen/margin_4x">
+        android:layout_marginHorizontal="@dimen/margin_4x"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/support">
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/settings_body"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|start"
-            android:text="@string/settings_agreement_button"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/text_body" />
+            android:layout_weight="1"
+            android:text="@string/settings_agreement_button" />
 
         <ImageView
-            android:layout_width="@dimen/settings_icon_size"
-            android:layout_height="@dimen/settings_icon_size"
-            android:layout_gravity="center_vertical|end"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_arrow_forward" />
-    </FrameLayout>
-</LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

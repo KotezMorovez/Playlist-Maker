@@ -2,14 +2,22 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/primary</item>
-        <item name="colorAccent">@color/primary</item>
+        <item name="colorPrimary">@color/yp_blue</item>
+        <item name="android:colorPrimaryDark">@color/yp_blue</item>
+        <item name="colorAccent">@color/yp_blue</item>
+        <item name="colorOnPrimary">@color/yp_black</item>
     </style>
 
-    <style name="Toolbar.Main" parent="Base.Theme.PlaylistMaker">
-        <item name="android:textSize">@dimen/text_header</item>
+    <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="fontWeight">500</item>
     </style>
 
-    <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
+    <style name="Theme.PlaylistMaker.Main" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimaryDark">@color/yp_blue</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="fontWeight">500</item>
+        <item name="colorOnPrimary">@color/yp_black</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
 </resources>
