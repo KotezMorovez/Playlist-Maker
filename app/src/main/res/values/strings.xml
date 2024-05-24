@@ -12,6 +12,12 @@
     <string name="settings_support_button">Написать в поддержку</string>
     <string name="settings_agreement_button">Пользовательское соглашение</string>
 
+    <string name="email_to">testmail@yandex.ru</string>
+    <string name="email_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="agreement_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="share_message">https://practicum.yandex.ru/android-developer/?from=catalog</string>
+
     <string name="library_title">Медиатека</string>
 
     <string name="search_title">Поиск</string>

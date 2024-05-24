@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary">#1A1B22</color>
-    <color name="text_primary">#FFFFFFFF</color>
-    <color name="white_static">#FFFFFFFF</color>
+    <color name="secondary">#1A1B22</color>
+    <color name="icon_primary">#FF1A1B22</color>
+    <color name="icon_secondary">#FFAEAFB4</color>
+    <color name="icon_navigation">#FFFFFFFF</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
