@@ -1,10 +1,12 @@
-package com.example.playlist_maker
+package com.example.playlist_maker.ui
 
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.ActivityMainBinding
+import com.example.playlist_maker.ui.search.SearchActivity
 
 
 class MainActivity : AppCompatActivity() {
