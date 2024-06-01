@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#1A1B22</color>
-    <color name="secondary">#1A1B22</color>
-    <color name="icon_primary">#FF1A1B22</color>
-    <color name="icon_secondary">#FFAEAFB4</color>
-    <color name="icon_navigation">#FFFFFFFF</color>
+    <color name="primary">@color/yp_black</color>
+    <color name="secondary">@color/yp_black</color>
+    <color name="icon_primary">@color/yp_black</color>
+    <color name="icon_secondary">@color/yp_text_gray</color>
+    <color name="icon_navigation">@color/yp_white</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>

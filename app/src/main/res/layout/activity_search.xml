@@ -37,7 +37,7 @@
             android:background="@color/yp_light_gray"
             android:hint="@string/search_title" />
 
-        <Button
+        <ImageView
             android:id="@+id/searchFieldClearButton"
             style="@style/search_clear_button"
             android:layout_width="12dp"

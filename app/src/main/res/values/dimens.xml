@@ -19,5 +19,5 @@
 
     <dimen name="icon_size">24dp</dimen>
 
-    <dimen name="settings_block_height">60dp</dimen>
+    <dimen name="block_height">60dp</dimen>
 </resources>

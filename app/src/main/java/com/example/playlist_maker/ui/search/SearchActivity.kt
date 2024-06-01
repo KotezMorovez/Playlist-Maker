@@ -1,4 +1,4 @@
-package com.example.playlist_maker
+package com.example.playlist_maker.ui.search
 
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -9,15 +9,15 @@ import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlist_maker.R
+import com.example.playlist_maker.data.TrackService
 import com.example.playlist_maker.databinding.ActivitySearchBinding
+import com.example.playlist_maker.ui.search.adapter.SearchAdapter
 
 
 class SearchActivity : AppCompatActivity() {
-    companion object {
-        private const val EMPTY_STRING = ""
-        private const val REQUEST = "search"
-    }
-
     private lateinit var viewBinding: ActivitySearchBinding
     private var searchRequest = EMPTY_STRING
     private val textWatcher = object : TextWatcher {
@@ -26,10 +26,10 @@ class SearchActivity : AppCompatActivity() {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             if (s.isNullOrEmpty()) {
-                viewBinding.searchFieldClearButton.visibility = GONE
+                viewBinding.searchFieldClearButton.isVisible = false
 
             } else {
-                viewBinding.searchFieldClearButton.visibility = VISIBLE
+                viewBinding.searchFieldClearButton.isVisible = true
             }
         }
 
@@ -76,6 +76,11 @@ class SearchActivity : AppCompatActivity() {
                     searchEditText.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
             }
+
+            val adapter = SearchAdapter()
+            adapter.setItems(TrackService.getTracks())
+            searchRecyclerView.adapter = adapter
+            searchRecyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
         }
     }
 
@@ -94,4 +99,10 @@ class SearchActivity : AppCompatActivity() {
             viewBinding.searchEditText.setText(searchRequest)
         }
     }
+
+    companion object {
+        private const val EMPTY_STRING = ""
+        private const val REQUEST = "search"
+    }
+
 }

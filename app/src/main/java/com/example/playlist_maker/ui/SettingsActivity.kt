@@ -1,17 +1,13 @@
-package com.example.playlist_maker
+package com.example.playlist_maker.ui
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
-    companion object {
-        private const val SEND_INTENT_TYPE = "text/plain"
-        private var SEND_INTENT_DATA = "mailto:"
-    }
-
     private lateinit var viewBinding: ActivitySettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,5 +57,10 @@ class SettingsActivity : AppCompatActivity() {
                 startActivity(agreementIntent)
             }
         }
+    }
+
+    companion object {
+        private const val SEND_INTENT_TYPE = "text/plain"
+        private var SEND_INTENT_DATA = "mailto:"
     }
 }
