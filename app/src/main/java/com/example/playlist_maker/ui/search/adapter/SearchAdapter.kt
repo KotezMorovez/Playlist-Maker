@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlist_maker.R
 import com.example.playlist_maker.common.dpToPx
-import com.example.playlist_maker.databinding.ItemSearchBinding
+import com.example.playlist_maker.databinding.ItemTrackBinding
 
 class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
     private var items: List<TrackItem> = listOf()
@@ -21,7 +21,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            ItemSearchBinding.inflate(
+            ItemTrackBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -34,7 +34,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
         holder.bind(items[position])
     }
 
-    inner class ViewHolder(private val binding: ItemSearchBinding) :
+    inner class ViewHolder(private val binding: ItemTrackBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: TrackItem) {
             with(binding) {
