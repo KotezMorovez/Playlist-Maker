@@ -66,7 +66,7 @@ class SearchActivity : AppCompatActivity() {
 
             searchEditText.addTextChangedListener(textWatcher)
             searchEditText.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
                     loadTracks(searchEditText.text.toString())
                     return@setOnEditorActionListener true

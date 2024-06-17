@@ -45,7 +45,7 @@
         <item name="android:textSize">@dimen/text_body</item>
         <item name="android:textColor">@color/yp_black</item>
         <item name="android:textColorHint">@color/yp_text_gray</item>
-        <item name="android:imeOptions">actionDone</item>
+        <item name="android:imeOptions">actionSearch</item>
         <item name="android:textCursorDrawable">@drawable/ic_edittext_cursor</item>
         <item name="android:inputType">text</item>
         <item name="android:maxLines">1</item>
