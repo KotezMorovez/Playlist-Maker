@@ -47,6 +47,9 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
                     .fitCenter()
                     .transform(RoundedCorners(dpToPx(2f, trackImageView.context)))
                     .into(trackImageView)
+
+                artistNameTextView.invalidate()
+                artistNameTextView.requestLayout()
             }
         }
     }

@@ -21,4 +21,7 @@
     <string name="library_title">Медиатека</string>
 
     <string name="search_title">Поиск</string>
+    <string name="search_placeholder">Ничего не нашлось</string>
+    <string name="no_internet_placeholder">Проблемы со связью\n\nЗагрузка не удалась. Проверьте \nподключение к интернету</string>
+    <string name="no_internet_placeholder_button">Обновить</string>
 </resources>
