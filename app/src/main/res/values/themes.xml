@@ -1,12 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/yp_blue</item>
+        <item name="colorSecondary">@color/yp_blue</item>
         <item name="colorPrimaryDark">@color/yp_blue</item>
         <item name="colorAccent">@color/yp_blue</item>
         <item name="colorOnPrimary">@color/yp_black</item>
         <item name="colorOnSecondary">@color/yp_text_gray</item>
+
+        <item name="switchStyle">@style/Widget.App.Switch</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
@@ -20,5 +21,16 @@
         <item name="fontWeight">500</item>
         <item name="colorOnPrimary">@color/yp_black</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+
+    <style name="Widget.App.Switch" parent="Widget.Material3.CompoundButton.Switch">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Switch" parent="">
+        <item name="colorOnSurface">@color/yp_text_gray</item>
+        <item name="colorOutline">@color/yp_light_gray</item>
+        <item name="colorPrimary">@color/yp_blue</item>
+        <item name="colorPrimaryContainer">@color/switch_track</item>
     </style>
 </resources>

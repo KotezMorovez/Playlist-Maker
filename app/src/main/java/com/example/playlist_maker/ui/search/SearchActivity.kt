@@ -16,6 +16,7 @@ import com.example.playlist_maker.databinding.ActivitySearchBinding
 import com.example.playlist_maker.domain.model.request.SearchRequest
 import com.example.playlist_maker.ui.search.adapter.SearchAdapter
 import com.example.playlist_maker.ui.search.adapter.TrackItem
+import com.example.playlist_maker.ui.search.common.HistoryManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,9 +29,16 @@ import java.util.Locale
 class SearchActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivitySearchBinding
     private var searchRequest = EMPTY_STRING
-    private var state = State.DATA
+    private var state = State.HISTORY
     private val searchRepo = SearchRepositoryImpl.getInstance()
-    private val adapter = SearchAdapter()
+    private val searchAdapter = SearchAdapter(onItemClickListener = { item ->
+        val list = HistoryManager.updateList(item)
+        this@SearchActivity.updateHistoryAdapterList(list)
+    })
+    private val historyAdapter = SearchAdapter(onItemClickListener = { item ->
+        val list = HistoryManager.updateList(item)
+        this@SearchActivity.updateHistoryAdapterList(list)
+    })
     private var loadTracksJob: Job? = null
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -51,6 +59,8 @@ class SearchActivity : AppCompatActivity() {
         setContentView(viewBinding.root)
 
         initUi()
+        HistoryManager.initHistoryStorage(this)
+        historyAdapter.setItems(HistoryManager.getHistory())
     }
 
     private fun initUi() {
@@ -79,14 +89,24 @@ class SearchActivity : AppCompatActivity() {
                 searchRequest = EMPTY_STRING
                 searchEditText.clearFocus()
                 imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
-                adapter.setItems(listOf())
+                searchAdapter.setItems(listOf())
 
-                state = State.DATA
+                state = State.HISTORY
                 applyState(state)
             }
 
-            searchRecyclerView.adapter = adapter
+            searchRecyclerView.adapter = searchAdapter
             searchRecyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+
+            historyRecyclerView.adapter = historyAdapter
+            historyRecyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+
+            clearHistoryButton.setOnClickListener {
+                HistoryManager.clearHistory()
+                updateHistoryAdapterList(listOf())
+            }
+
+            applyState(state)
         }
     }
 
@@ -105,6 +125,7 @@ class SearchActivity : AppCompatActivity() {
                 if (response?.resultCount != 0) {
                     val tracks = response?.tracks?.map {
                         TrackItem(
+                            trackId = it.trackId,
                             trackName = it.trackName,
                             artistName = it.artistName,
                             trackTime = SimpleDateFormat(
@@ -118,7 +139,7 @@ class SearchActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         state = State.DATA
                         applyState(state)
-                        adapter.setItems(tracks)
+                        searchAdapter.setItems(tracks)
                     }
                 } else {
                     withContext(Dispatchers.Main) {
@@ -137,6 +158,10 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun updateHistoryAdapterList(list: List<TrackItem>) {
+        historyAdapter.setItems(list)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -163,6 +188,7 @@ class SearchActivity : AppCompatActivity() {
             searchRecyclerView.isGone = true
             noInternetErrorContainer.isGone = true
             searchErrorContainer.isGone = true
+            historyContainer.isGone = true
 
             when (state) {
                 State.DATA -> {
@@ -176,21 +202,9 @@ class SearchActivity : AppCompatActivity() {
                 State.ERROR -> {
                     noInternetErrorContainer.isVisible = true
                 }
-            }
-        }
-    }
 
-    enum class State {
-        DATA,
-        NO_DATA,
-        ERROR;
-
-        companion object {
-            fun fromIndex(index: Int): State {
-                return when (index) {
-                    0 -> DATA
-                    1 -> NO_DATA
-                    else -> ERROR
+                State.HISTORY -> {
+                    historyContainer.isVisible = true
                 }
             }
         }
@@ -200,5 +214,23 @@ class SearchActivity : AppCompatActivity() {
         private const val EMPTY_STRING = ""
         private const val REQUEST = "search"
         private const val STATE = "state"
+    }
+
+    enum class State {
+        DATA,
+        NO_DATA,
+        ERROR,
+        HISTORY;
+
+        companion object {
+            fun fromIndex(index: Int): State {
+                return when (index) {
+                    0 -> DATA
+                    1 -> NO_DATA
+                    2 -> ERROR
+                    else -> HISTORY
+                }
+            }
+        }
     }
 }

@@ -4,6 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import com.example.playlist_maker.App
 import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.ActivitySettingsBinding
 
@@ -25,6 +28,17 @@ class SettingsActivity : AppCompatActivity() {
                 resources.getText(R.string.settings_title)
             settingsToolbar.setNavigationOnClickListener {
                 this@SettingsActivity.onBackPressedDispatcher.onBackPressed()
+            }
+
+            if(AppCompatDelegate.getDefaultNightMode() == MODE_NIGHT_YES){
+                darkThemeSwitch.isChecked = true
+            } else {
+                darkThemeSwitch.isChecked = false
+            }
+
+            darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
+                (applicationContext as App).switchTheme(checked)
+                (applicationContext as App).saveTheme()
             }
 
             share.setOnClickListener {

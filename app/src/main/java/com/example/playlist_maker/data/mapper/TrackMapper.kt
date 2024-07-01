@@ -16,6 +16,7 @@ fun ITunesEntity.toDomain(): TrackList {
 
 fun TrackEntity.toDomain(): Track {
     return Track(
+        trackId = this.trackId,
         trackName = this.trackName,
         artistName = this.artistName,
         trackTimeMillis = this.trackTimeMillis,
