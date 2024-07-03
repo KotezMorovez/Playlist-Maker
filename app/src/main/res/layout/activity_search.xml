@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondary"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/searchToolbar"
+        style="@style/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:navigationIcon="@drawable/ic_arrow_back" />
+
+    <LinearLayout
+        android:id="@+id/searchField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_4x"
+        android:background="@drawable/search_field_background"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp">
+
+        <ImageView
+            style="@style/search_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_search" />
+
+        <EditText
+            android:id="@+id/searchEditText"
+            style="@style/search_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:background="@color/yp_light_gray"
+            android:hint="@string/search_title" />
+
+        <ImageView
+            android:id="@+id/searchFieldClearButton"
+            style="@style/search_clear_button"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="@dimen/margin_4x"
+        android:layout_weight="1"
+        android:visibility="visible"
+        tools:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/searchErrorContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_6x"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/searchPlaceholderImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/placeholder_search_error" />
+
+        <TextView
+            style="@style/search_placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_4x"
+            android:text="@string/search_placeholder" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/noInternetErrorContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_6x"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/noInternetPlaceholderImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/placeholder_no_internet_error"
+            tools:visibility="visible" />
+
+        <TextView
+            style="@style/search_placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_4x"
+            android:gravity="center_horizontal"
+            android:text="@string/no_internet_placeholder"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/refreshButton"
+            style="@style/small_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_6x"
+            android:text="@string/no_internet_placeholder_button" />
+    </LinearLayout>
+</LinearLayout>
