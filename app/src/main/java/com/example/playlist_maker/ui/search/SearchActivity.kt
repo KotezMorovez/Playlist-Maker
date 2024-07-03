@@ -1,8 +1,12 @@
 package com.example.playlist_maker.ui.search
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.AttributeSet
+import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -30,7 +34,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivitySearchBinding
     private var searchRequest = EMPTY_STRING
     private var state = State.HISTORY
-    private val searchRepo = SearchRepositoryImpl.getInstance()
+    private val searchRepository = SearchRepositoryImpl.getInstance()
     private val searchAdapter = SearchAdapter(onItemClickListener = { item ->
         val list = HistoryManager.updateList(item)
         this@SearchActivity.updateHistoryAdapterList(list)
@@ -50,6 +54,7 @@ class SearchActivity : AppCompatActivity() {
 
         override fun afterTextChanged(s: Editable?) {
             searchRequest = s.toString()
+            trySetHistoryState()
         }
     }
 
@@ -58,9 +63,10 @@ class SearchActivity : AppCompatActivity() {
         viewBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        initUi()
         HistoryManager.initHistoryStorage(this)
         historyAdapter.setItems(HistoryManager.getHistory())
+
+        initUi()
     }
 
     private fun initUi() {
@@ -71,8 +77,7 @@ class SearchActivity : AppCompatActivity() {
                 this@SearchActivity.onBackPressedDispatcher.onBackPressed()
             }
 
-            val imm =
-                searchEditText.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = getSystemService(InputMethodManager::class.java)
 
             searchEditText.addTextChangedListener(textWatcher)
             searchEditText.setOnEditorActionListener { _, actionId, _ ->
@@ -83,6 +88,14 @@ class SearchActivity : AppCompatActivity() {
                 }
                 return@setOnEditorActionListener false
             }
+            searchEditText.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus){
+                    trySetHistoryState()
+                }
+            }
+
+            searchEditText.requestFocus()
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
             searchFieldClearButton.setOnClickListener {
                 searchEditText.setText(EMPTY_STRING)
@@ -90,9 +103,7 @@ class SearchActivity : AppCompatActivity() {
                 searchEditText.clearFocus()
                 imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
                 searchAdapter.setItems(listOf())
-
-                state = State.HISTORY
-                applyState(state)
+                trySetHistoryState()
             }
 
             searchRecyclerView.adapter = searchAdapter
@@ -104,9 +115,10 @@ class SearchActivity : AppCompatActivity() {
             clearHistoryButton.setOnClickListener {
                 HistoryManager.clearHistory()
                 updateHistoryAdapterList(listOf())
+                trySetHistoryState()
             }
 
-            applyState(state)
+            trySetHistoryState()
         }
     }
 
@@ -114,7 +126,7 @@ class SearchActivity : AppCompatActivity() {
         loadTracksJob?.cancel()
 
         loadTracksJob = CoroutineScope(Dispatchers.IO).launch {
-            val result = searchRepo.getTracks(
+            val result = searchRepository.getTracks(
                 SearchRequest(
                     text = text
                 )
@@ -162,6 +174,20 @@ class SearchActivity : AppCompatActivity() {
 
     private fun updateHistoryAdapterList(list: List<TrackItem>) {
         historyAdapter.setItems(list)
+    }
+
+    private fun trySetHistoryState() {
+        state = if (
+            searchRequest.isEmpty()
+            && viewBinding.searchEditText.hasFocus()
+            && !HistoryManager.isHistoryEmpty()
+        ) {
+            State.HISTORY
+        } else {
+            State.DATA
+        }
+
+        applyState(state)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

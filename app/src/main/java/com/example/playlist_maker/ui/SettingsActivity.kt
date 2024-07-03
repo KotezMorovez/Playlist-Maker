@@ -37,8 +37,8 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
+                (applicationContext as App).saveTheme(checked)
                 (applicationContext as App).switchTheme(checked)
-                (applicationContext as App).saveTheme()
             }
 
             share.setOnClickListener {

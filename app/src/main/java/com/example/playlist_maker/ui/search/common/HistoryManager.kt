@@ -7,12 +7,12 @@ import com.example.playlist_maker.common.JSONConverter
 import com.example.playlist_maker.ui.search.adapter.TrackItem
 
 object HistoryManager {
-    private const val HISTORY_PREFERENCES = "history_preferences"
+    private const val PREFERENCES = "playlist_maker_shared_preferences"
     private const val HISTORY = "history"
     private var sharedPrefs: SharedPreferences? = null
 
     fun initHistoryStorage(context: Context) {
-        sharedPrefs = context.getSharedPreferences(HISTORY_PREFERENCES, MODE_PRIVATE)
+        sharedPrefs = context.getSharedPreferences(PREFERENCES, MODE_PRIVATE)
     }
 
     fun getHistory(): List<TrackItem> {
@@ -22,19 +22,12 @@ object HistoryManager {
 
     fun updateList(track: TrackItem): List<TrackItem> {
         val json = sharedPrefs?.getString(HISTORY, "")
-        var list = mutableListOf<TrackItem>()
+        var list = listOf<TrackItem>()
 
         if (json != null) {
-            list = JSONConverter().unpackListFromJSON<TrackItem>(json).toMutableList()
+            list = JSONConverter().unpackListFromJSON<TrackItem>(json)
 
-            if (list.size < 10) {
-                list = list.filter { track.trackId != it.trackId }.toMutableList()
-            } else {
-                while (list.size >= 10) {
-                    list.removeAt(9)
-                }
-            }
-            list.add(0, track)
+            list = listOf(track) + list.filter { track.trackId != it.trackId }.take(9)
         }
 
         sharedPrefs?.edit()!!
@@ -46,5 +39,10 @@ object HistoryManager {
 
     fun clearHistory() {
         sharedPrefs?.edit()!!.clear().apply()
+    }
+
+    fun isHistoryEmpty(): Boolean {
+        val list = sharedPrefs?.getString(HISTORY, "")
+        return list.isNullOrEmpty()
     }
 }
