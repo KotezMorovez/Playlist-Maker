@@ -24,7 +24,7 @@
 
         <TextView
             android:id="@+id/trackNameTextView"
-            style="@style/text_body"
+            style="@style/TextBody"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="TEST1234567890123456789012345678901234567890" />
@@ -37,7 +37,7 @@
 
             <TextView
                 android:id="@+id/artistNameTextView"
-                style="@style/text_body_secondary"
+                style="@style/TextBodySecondary"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -48,11 +48,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_dot"
-                style="@style/text_body_secondary"/>
+                style="@style/TextBodySecondary"/>
 
             <TextView
                 android:id="@+id/trackTimeTextView"
-                style="@style/text_body_secondary"
+                style="@style/TextBodySecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="00:00" />

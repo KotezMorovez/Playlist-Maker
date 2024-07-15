@@ -10,7 +10,9 @@ import com.example.playlist_maker.R
 import com.example.playlist_maker.common.dpToPx
 import com.example.playlist_maker.databinding.ItemTrackBinding
 
-class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+class SearchAdapter(
+    private val onItemClickListener: (item: TrackItem) -> Unit
+) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
     private var items: List<TrackItem> = listOf()
 
     @SuppressLint("NotifyDataSetChanged")
@@ -50,6 +52,10 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
                 artistNameTextView.invalidate()
                 artistNameTextView.requestLayout()
+
+                root.setOnClickListener {
+                    onItemClickListener.invoke(item)
+                }
             }
         }
     }
