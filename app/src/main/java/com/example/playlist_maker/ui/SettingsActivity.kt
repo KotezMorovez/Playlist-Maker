@@ -30,11 +30,7 @@ class SettingsActivity : AppCompatActivity() {
                 this@SettingsActivity.onBackPressedDispatcher.onBackPressed()
             }
 
-            if(AppCompatDelegate.getDefaultNightMode() == MODE_NIGHT_YES){
-                darkThemeSwitch.isChecked = true
-            } else {
-                darkThemeSwitch.isChecked = false
-            }
+            darkThemeSwitch.isChecked = AppCompatDelegate.getDefaultNightMode() == MODE_NIGHT_YES
 
             darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
                 (applicationContext as App).saveTheme(checked)
