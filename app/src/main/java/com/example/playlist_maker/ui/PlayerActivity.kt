@@ -3,14 +3,11 @@ package com.example.playlist_maker.ui
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlist_maker.R
-import com.example.playlist_maker.common.GlobalConstants.EMPTY_STRING
-import com.example.playlist_maker.common.GlobalConstants.TRACK
 import com.example.playlist_maker.common.dpToPx
 import com.example.playlist_maker.databinding.ActivityPlayerBinding
 import com.example.playlist_maker.ui.search.adapter.TrackItem
@@ -18,7 +15,6 @@ import com.example.playlist_maker.ui.search.adapter.TrackItem
 class PlayerActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityPlayerBinding
     private var item: TrackItem? = null
-    private var
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,31 +48,36 @@ class PlayerActivity : AppCompatActivity() {
 
             playerTrackNameTextView.text = item?.trackName
             playerArtistNameTextView.text = item?.artistName
-            playerTrackTimeTextView.text = item?.trackTime
+            playerTrackTimeTextView.text = timer
 
-            infoItem1.infoHeaderTextView.text = this@PlayerActivity.getText(R.string.player_info1)
-            infoItem1.infoBodyTextView.text = timer
+
+            trackInfoTrackTimeItem.infoHeaderTextView.text =
+                this@PlayerActivity.getText(R.string.player_track_info_track_time)
+            trackInfoTrackTimeItem.infoBodyTextView.text = item?.trackTime
 
             if (item?.collectionName.isNullOrEmpty()) {
-                infoItem2.infoHeaderTextView.isGone = true
-                infoItem2.infoBodyTextView.isGone = true
+                trackInfoAlbumItem.infoHeaderTextView.isGone = true
+                trackInfoAlbumItem.infoBodyTextView.isGone = true
 
             } else {
-                infoItem2.infoHeaderTextView.isVisible = true
-                infoItem2.infoBodyTextView.isVisible = true
-                infoItem2.infoHeaderTextView.text =
-                    this@PlayerActivity.getText(R.string.player_info2)
-                infoItem2.infoBodyTextView.text = item?.collectionName
+                trackInfoAlbumItem.infoHeaderTextView.isVisible = true
+                trackInfoAlbumItem.infoBodyTextView.isVisible = true
+                trackInfoAlbumItem.infoHeaderTextView.text =
+                    this@PlayerActivity.getText(R.string.player_track_info_album)
+                trackInfoAlbumItem.infoBodyTextView.text = item?.collectionName
             }
 
-            infoItem3.infoHeaderTextView.text = this@PlayerActivity.getText(R.string.player_info3)
-            infoItem3.infoBodyTextView.text = item?.releaseDate
+            trackInfoReleaseDateItem.infoHeaderTextView.text =
+                this@PlayerActivity.getText(R.string.player_track_info_release_date)
+            trackInfoReleaseDateItem.infoBodyTextView.text = item?.releaseDate
 
-            infoItem4.infoHeaderTextView.text = this@PlayerActivity.getText(R.string.player_info4)
-            infoItem4.infoBodyTextView.text = item?.primaryGenreName
+            trackInfoGenreItem.infoHeaderTextView.text =
+                this@PlayerActivity.getText(R.string.player_track_info_genre)
+            trackInfoGenreItem.infoBodyTextView.text = item?.primaryGenreName
 
-            infoItem5.infoHeaderTextView.text = this@PlayerActivity.getText(R.string.player_info5)
-            infoItem5.infoBodyTextView.text = item?.country
+            trackInfoCountryItem.infoHeaderTextView.text =
+                this@PlayerActivity.getText(R.string.player_track_info_country)
+            trackInfoCountryItem.infoBodyTextView.text = item?.country
         }
     }
 
@@ -84,5 +85,7 @@ class PlayerActivity : AppCompatActivity() {
         private const val DELIMITER = '/'
         private const val ALBUM_SIZE = "512x512bb.jpg"
         private val timer = "00:00"
+        private const val EMPTY_STRING = ""
+        private const val TRACK = "track"
     }
 }

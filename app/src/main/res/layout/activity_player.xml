@@ -99,50 +99,50 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/infoItem1"
+        app:layout_constraintBottom_toTopOf="@+id/trackInfoTrackTimeItem"
         app:layout_constraintEnd_toEndOf="@id/rightGuideLine"
         app:layout_constraintStart_toStartOf="@id/leftGuideLine"
         tools:text="0:00" />
 
     <include
-        android:id="@+id/infoItem1"
+        android:id="@+id/trackInfoTrackTimeItem"
         layout="@layout/item_player_info"
         android:layout_width="0dp"
         android:layout_height="32dp"
 
-        app:layout_constraintBottom_toTopOf="@+id/infoItem2"
+        app:layout_constraintBottom_toTopOf="@+id/trackInfoAlbumItem"
         app:layout_constraintEnd_toEndOf="@id/rightGuideLine"
         app:layout_constraintStart_toStartOf="@id/leftGuideLine" />
 
     <include
-        android:id="@+id/infoItem2"
+        android:id="@+id/trackInfoAlbumItem"
         layout="@layout/item_player_info"
         android:layout_width="0dp"
         android:layout_height="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/infoItem3"
+        app:layout_constraintBottom_toTopOf="@+id/trackInfoReleaseDateItem"
         app:layout_constraintEnd_toEndOf="@id/rightGuideLine"
         app:layout_constraintStart_toStartOf="@id/leftGuideLine" />
 
     <include
-        android:id="@+id/infoItem3"
+        android:id="@+id/trackInfoReleaseDateItem"
         layout="@layout/item_player_info"
         android:layout_width="0dp"
         android:layout_height="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/infoItem4"
+        app:layout_constraintBottom_toTopOf="@+id/trackInfoGenreItem"
         app:layout_constraintEnd_toEndOf="@id/rightGuideLine"
         app:layout_constraintStart_toStartOf="@id/leftGuideLine" />
 
     <include
-        android:id="@+id/infoItem4"
+        android:id="@+id/trackInfoGenreItem"
         layout="@layout/item_player_info"
         android:layout_width="0dp"
         android:layout_height="32dp"
-        app:layout_constraintBottom_toTopOf="@id/infoItem5"
+        app:layout_constraintBottom_toTopOf="@id/trackInfoCountryItem"
         app:layout_constraintEnd_toEndOf="@id/rightGuideLine"
         app:layout_constraintStart_toStartOf="@id/leftGuideLine" />
 
     <include
-        android:id="@+id/infoItem5"
+        android:id="@+id/trackInfoCountryItem"
         layout="@layout/item_player_info"
         android:layout_width="0dp"
         android:layout_height="32dp"

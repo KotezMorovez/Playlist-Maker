@@ -13,8 +13,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlist_maker.R
-import com.example.playlist_maker.common.GlobalConstants.EMPTY_STRING
-import com.example.playlist_maker.common.GlobalConstants.TRACK
 import com.example.playlist_maker.data.repository.SearchRepositoryImpl
 import com.example.playlist_maker.databinding.ActivitySearchBinding
 import com.example.playlist_maker.domain.model.request.SearchRequest
@@ -27,10 +25,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.Date
 import java.util.Locale
 
 
@@ -39,34 +35,42 @@ class SearchActivity : AppCompatActivity() {
     private var searchRequest = EMPTY_STRING
     private var state = State.HISTORY
     private val searchRepository = SearchRepositoryImpl.getInstance()
-    private val searchAdapter = SearchAdapter(onItemClickListener = { item ->
-        val list = HistoryManager.updateList(item)
-        this@SearchActivity.updateHistoryAdapterList(list)
-
-        val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
-        intent.putExtra(TRACK, item)
-        startActivity(intent)
-    })
-    private val historyAdapter = SearchAdapter(onItemClickListener = { item ->
-        val list = HistoryManager.updateList(item)
-        this@SearchActivity.updateHistoryAdapterList(list)
-
-        val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
-        intent.putExtra(TRACK, item)
-        startActivity(intent)
-    })
     private var loadTracksJob: Job? = null
-    private val textWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        }
+    private val searchAdapter: SearchAdapter
+    private val historyAdapter : SearchAdapter
+    private val textWatcher: TextWatcher
 
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            viewBinding.searchFieldClearButton.isInvisible = s.isNullOrEmpty()
-        }
+    init {
+        searchAdapter = SearchAdapter(onItemClickListener = { item ->
+            val list = HistoryManager.updateList(item)
+            this@SearchActivity.updateHistoryAdapterList(list)
 
-        override fun afterTextChanged(s: Editable?) {
-            searchRequest = s.toString()
-            trySetHistoryState()
+            val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+            intent.putExtra(TRACK, item)
+            startActivity(intent)
+        })
+
+        historyAdapter = SearchAdapter(onItemClickListener = { item ->
+            val list = HistoryManager.updateList(item)
+            this@SearchActivity.updateHistoryAdapterList(list)
+
+            val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+            intent.putExtra(TRACK, item)
+            startActivity(intent)
+        })
+
+        textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewBinding.searchFieldClearButton.isInvisible = s.isNullOrEmpty()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                searchRequest = s.toString()
+                trySetHistoryState()
+            }
         }
     }
 
@@ -263,6 +267,8 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val REQUEST = "search"
         private const val STATE = "state"
+        private const val EMPTY_STRING = ""
+        private const val TRACK = "track"
     }
 
     enum class State {
