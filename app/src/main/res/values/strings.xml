@@ -24,4 +24,7 @@
     <string name="search_placeholder">Ничего не нашлось</string>
     <string name="no_internet_placeholder">Проблемы со связью\n\nЗагрузка не удалась. Проверьте \nподключение к интернету</string>
     <string name="no_internet_placeholder_button">Обновить</string>
+
+    <string name="history_header">Вы искали</string>
+    <string name="history_button">Очистить историю</string>
 </resources>
