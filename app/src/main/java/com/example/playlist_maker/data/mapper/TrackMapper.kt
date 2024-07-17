@@ -20,6 +20,10 @@ fun TrackEntity.toDomain(): Track {
         trackName = this.trackName,
         artistName = this.artistName,
         trackTimeMillis = this.trackTimeMillis,
+        collectionName = this.collectionName,
+        releaseDate = this.releaseDate,
+        primaryGenreName = this.primaryGenreName,
+        country = this.country,
         artworkUrl100 = this.artworkUrl100
     )
 }

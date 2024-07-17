@@ -1,11 +1,9 @@
 package com.example.playlist_maker.ui.search
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.AttributeSet
-import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -18,6 +16,7 @@ import com.example.playlist_maker.R
 import com.example.playlist_maker.data.repository.SearchRepositoryImpl
 import com.example.playlist_maker.databinding.ActivitySearchBinding
 import com.example.playlist_maker.domain.model.request.SearchRequest
+import com.example.playlist_maker.ui.PlayerActivity
 import com.example.playlist_maker.ui.search.adapter.SearchAdapter
 import com.example.playlist_maker.ui.search.adapter.TrackItem
 import com.example.playlist_maker.ui.search.common.HistoryManager
@@ -27,6 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Locale
 
 
@@ -35,26 +35,42 @@ class SearchActivity : AppCompatActivity() {
     private var searchRequest = EMPTY_STRING
     private var state = State.HISTORY
     private val searchRepository = SearchRepositoryImpl.getInstance()
-    private val searchAdapter = SearchAdapter(onItemClickListener = { item ->
-        val list = HistoryManager.updateList(item)
-        this@SearchActivity.updateHistoryAdapterList(list)
-    })
-    private val historyAdapter = SearchAdapter(onItemClickListener = { item ->
-        val list = HistoryManager.updateList(item)
-        this@SearchActivity.updateHistoryAdapterList(list)
-    })
     private var loadTracksJob: Job? = null
-    private val textWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        }
+    private val searchAdapter: SearchAdapter
+    private val historyAdapter : SearchAdapter
+    private val textWatcher: TextWatcher
 
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            viewBinding.searchFieldClearButton.isInvisible = s.isNullOrEmpty()
-        }
+    init {
+        searchAdapter = SearchAdapter(onItemClickListener = { item ->
+            val list = HistoryManager.updateList(item)
+            this@SearchActivity.updateHistoryAdapterList(list)
 
-        override fun afterTextChanged(s: Editable?) {
-            searchRequest = s.toString()
-            trySetHistoryState()
+            val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+            intent.putExtra(TRACK, item)
+            startActivity(intent)
+        })
+
+        historyAdapter = SearchAdapter(onItemClickListener = { item ->
+            val list = HistoryManager.updateList(item)
+            this@SearchActivity.updateHistoryAdapterList(list)
+
+            val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+            intent.putExtra(TRACK, item)
+            startActivity(intent)
+        })
+
+        textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewBinding.searchFieldClearButton.isInvisible = s.isNullOrEmpty()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                searchRequest = s.toString()
+                trySetHistoryState()
+            }
         }
     }
 
@@ -89,7 +105,7 @@ class SearchActivity : AppCompatActivity() {
                 return@setOnEditorActionListener false
             }
             searchEditText.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus){
+                if (hasFocus) {
                     trySetHistoryState()
                 }
             }
@@ -136,6 +152,11 @@ class SearchActivity : AppCompatActivity() {
                 val response = result.getOrNull()
                 if (response?.resultCount != 0) {
                     val tracks = response?.tracks?.map {
+                        val date = SimpleDateFormat(
+                            "yyyy-MM-dd'T'HH:mm:ss'Z'",
+                            Locale.getDefault()
+                        ).parse(it.releaseDate) ?: LocalDate.now()
+
                         TrackItem(
                             trackId = it.trackId,
                             trackName = it.trackName,
@@ -144,6 +165,13 @@ class SearchActivity : AppCompatActivity() {
                                 "mm:ss",
                                 Locale.getDefault()
                             ).format(it.trackTimeMillis),
+                            collectionName = it.collectionName,
+                            releaseDate = SimpleDateFormat(
+                                "yyyy",
+                                Locale.getDefault()
+                            ).format(date),
+                            primaryGenreName = it.primaryGenreName,
+                            country = it.country,
                             artworkUrl100 = it.artworkUrl100
                         )
                     } ?: listOf()
@@ -237,9 +265,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val EMPTY_STRING = ""
         private const val REQUEST = "search"
         private const val STATE = "state"
+        private const val EMPTY_STRING = ""
+        private const val TRACK = "track"
     }
 
     enum class State {
