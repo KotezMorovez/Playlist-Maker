@@ -15,6 +15,7 @@ activity = "1.9.0"
 constraintlayout = "2.1.4"
 retrofit = "2.9.0"
 viewbinding = "8.4.1"
+parcelize = "2.0.0"
 
 [libraries]
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
@@ -36,4 +37,5 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+jetbrainsKotlinPluginParcelize = {id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "parcelize" }
 
