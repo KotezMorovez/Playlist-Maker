@@ -13,6 +13,8 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlist_maker.R
+import com.example.playlist_maker.ui.common.Debouncer
+import com.example.playlist_maker.ui.common.ClickThrottler
 import com.example.playlist_maker.data.repository.SearchRepositoryImpl
 import com.example.playlist_maker.databinding.ActivitySearchBinding
 import com.example.playlist_maker.domain.model.request.SearchRequest
@@ -29,7 +31,6 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Locale
 
-
 class SearchActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivitySearchBinding
     private var searchRequest = EMPTY_STRING
@@ -37,39 +38,58 @@ class SearchActivity : AppCompatActivity() {
     private val searchRepository = SearchRepositoryImpl.getInstance()
     private var loadTracksJob: Job? = null
     private val searchAdapter: SearchAdapter
-    private val historyAdapter : SearchAdapter
+    private val historyAdapter: SearchAdapter
     private val textWatcher: TextWatcher
+    private val searchDebouncer: Debouncer
+    private val itemClickThrottler = ClickThrottler(CLICK_DELAY)
 
     init {
-        searchAdapter = SearchAdapter(onItemClickListener = { item ->
-            val list = HistoryManager.updateList(item)
-            this@SearchActivity.updateHistoryAdapterList(list)
+        searchDebouncer = Debouncer(SEARCH_DELAY) {
+            with(viewBinding) {
+                // очистка поля работает некорректно, при нажатии x случается отправка пустого запроса
+                val imm = getSystemService(InputMethodManager::class.java)
 
-            val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
-            intent.putExtra(TRACK, item)
-            startActivity(intent)
+                imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+                loadTracks(searchEditText.text.toString())
+
+                trySetHistoryState()
+            }
+        }
+
+        searchAdapter = SearchAdapter(onItemClickListener = { item ->
+            if (itemClickThrottler.clickThrottle()) {
+                val list = HistoryManager.updateList(item)
+                this@SearchActivity.updateHistoryAdapterList(list)
+
+                val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+                intent.putExtra(TRACK, item)
+                startActivity(intent)
+            }
         })
 
         historyAdapter = SearchAdapter(onItemClickListener = { item ->
-            val list = HistoryManager.updateList(item)
-            this@SearchActivity.updateHistoryAdapterList(list)
+            if (itemClickThrottler.clickThrottle()) {
+                val list = HistoryManager.updateList(item)
+                this@SearchActivity.updateHistoryAdapterList(list)
 
-            val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
-            intent.putExtra(TRACK, item)
-            startActivity(intent)
+                val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+                intent.putExtra(TRACK, item)
+                startActivity(intent)
+            }
         })
 
         textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 viewBinding.searchFieldClearButton.isInvisible = s.isNullOrEmpty()
             }
 
             override fun afterTextChanged(s: Editable?) {
-                searchRequest = s.toString()
-                trySetHistoryState()
+                if (s != null) {
+                    searchRequest = s.toString()
+                    searchDebouncer.updateValue()
+                }
             }
         }
     }
@@ -114,9 +134,12 @@ class SearchActivity : AppCompatActivity() {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
             searchFieldClearButton.setOnClickListener {
+                searchEditText.removeTextChangedListener(textWatcher)
                 searchEditText.setText(EMPTY_STRING)
-                searchRequest = EMPTY_STRING
                 searchEditText.clearFocus()
+                searchEditText.addTextChangedListener(textWatcher)
+
+                searchRequest = EMPTY_STRING
                 imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
                 searchAdapter.setItems(listOf())
                 trySetHistoryState()
@@ -172,7 +195,8 @@ class SearchActivity : AppCompatActivity() {
                             ).format(date),
                             primaryGenreName = it.primaryGenreName,
                             country = it.country,
-                            artworkUrl100 = it.artworkUrl100
+                            artworkUrl100 = it.artworkUrl100,
+                            previewUrl = it.previewUrl
                         )
                     } ?: listOf()
 
@@ -211,6 +235,8 @@ class SearchActivity : AppCompatActivity() {
             && !HistoryManager.isHistoryEmpty()
         ) {
             State.HISTORY
+        } else  if(searchRequest.isNotEmpty()){
+            State.LOADING
         } else {
             State.DATA
         }
@@ -243,6 +269,7 @@ class SearchActivity : AppCompatActivity() {
             noInternetErrorContainer.isGone = true
             searchErrorContainer.isGone = true
             historyContainer.isGone = true
+            searchLoaderProgressBar.isGone = true
 
             when (state) {
                 State.DATA -> {
@@ -260,11 +287,17 @@ class SearchActivity : AppCompatActivity() {
                 State.HISTORY -> {
                     historyContainer.isVisible = true
                 }
+
+                State.LOADING -> {
+                    searchLoaderProgressBar.isVisible = true
+                }
             }
         }
     }
 
     companion object {
+        private const val SEARCH_DELAY = 2000L
+        private const val CLICK_DELAY = 500L
         private const val REQUEST = "search"
         private const val STATE = "state"
         private const val EMPTY_STRING = ""
@@ -275,7 +308,8 @@ class SearchActivity : AppCompatActivity() {
         DATA,
         NO_DATA,
         ERROR,
-        HISTORY;
+        HISTORY,
+        LOADING;
 
         companion object {
             fun fromIndex(index: Int): State {
@@ -283,7 +317,8 @@ class SearchActivity : AppCompatActivity() {
                     0 -> DATA
                     1 -> NO_DATA
                     2 -> ERROR
-                    else -> HISTORY
+                    3 -> HISTORY
+                    else -> LOADING
                 }
             }
         }
