@@ -24,6 +24,7 @@ fun TrackEntity.toDomain(): Track {
         releaseDate = this.releaseDate,
         primaryGenreName = this.primaryGenreName,
         country = this.country,
-        artworkUrl100 = this.artworkUrl100
+        artworkUrl100 = this.artworkUrl100,
+        previewUrl = this.previewUrl
     )
 }

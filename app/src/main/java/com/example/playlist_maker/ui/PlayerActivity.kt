@@ -2,19 +2,29 @@ package com.example.playlist_maker.ui
 
 import android.os.Build
 import android.os.Bundle
+import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlist_maker.R
+import com.example.playlist_maker.ui.common.Timer
 import com.example.playlist_maker.common.dpToPx
 import com.example.playlist_maker.databinding.ActivityPlayerBinding
+import com.example.playlist_maker.ui.common.AudioPlayer
 import com.example.playlist_maker.ui.search.adapter.TrackItem
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityPlayerBinding
     private var item: TrackItem? = null
+    private var isPlay: Boolean = false
+    private var isFavourite: Boolean = false
+    private var isInMedia: Boolean = false
+    private val player = AudioPlayer()
+    private lateinit var timer: Timer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +36,61 @@ class PlayerActivity : AppCompatActivity() {
         } else {
             intent.extras?.getParcelable(TRACK, TrackItem::class.java)
         }
+
+        timer = Timer(TIMER_DELAY, PREVIEW_TIME) { timeLeft ->
+            val timeLeftSeconds = Math.round(timeLeft / 1000f).toLong()
+
+            viewBinding.playerTrackTimeTextView.text =
+                String.format("%02d:%02d", timeLeftSeconds / 60, timeLeftSeconds)
+
+            if (timer.state == Timer.State.IDLE) {
+                setButtonDrawable(
+                    Button.PLAYER,
+                    R.drawable.ic_pause,
+                    R.drawable.ic_play,
+                )
+            }
+        }
+
+        player.preparePlayer(item?.previewUrl ?: "")
         initUi()
+    }
+
+    private fun setButtonDrawable(
+        button: Button,
+        @DrawableRes positive: Int,
+        @DrawableRes negative: Int
+    ) {
+        val view: ImageView
+        val state: Boolean
+
+        when (button) {
+            Button.MEDIA -> {
+                view = viewBinding.playerAddToMediaButton
+                state = isInMedia
+                isInMedia = !isInMedia
+            }
+
+            Button.FAVOURITE -> {
+                view = viewBinding.playerAddToFavouriteButton
+                state = isFavourite
+                isFavourite = !isFavourite
+            }
+
+            Button.PLAYER -> {
+                view = viewBinding.playerPausePlayButton
+                state = isPlay
+                isPlay = !isPlay
+            }
+        }
+
+        view.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                resources,
+                if (state) negative else positive,
+                null
+            )
+        )
     }
 
     private fun initUi() {
@@ -45,11 +109,28 @@ class PlayerActivity : AppCompatActivity() {
                 .transform(RoundedCorners(dpToPx(8f, playerAlbumImageView.context)))
                 .into(playerAlbumImageView)
 
+            playerPausePlayButton.setOnClickListener {
+                togglePlayButton()
+            }
+
+            playerAddToFavouriteButton.setOnClickListener {
+                setButtonDrawable(
+                    Button.FAVOURITE,
+                    R.drawable.ic_favourite_active,
+                    R.drawable.ic_favourite_inactive,
+                )
+            }
+
+            playerAddToMediaButton.setOnClickListener {
+                setButtonDrawable(
+                    Button.MEDIA,
+                    R.drawable.ic_already_added_to_media,
+                    R.drawable.ic_add_to_media,
+                )
+            }
 
             playerTrackNameTextView.text = item?.trackName
             playerArtistNameTextView.text = item?.artistName
-            playerTrackTimeTextView.text = timer
-
 
             trackInfoTrackTimeItem.infoHeaderTextView.text =
                 this@PlayerActivity.getText(R.string.player_track_info_track_time)
@@ -81,11 +162,45 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun togglePlayButton() {
+        setButtonDrawable(
+            Button.PLAYER,
+            R.drawable.ic_pause,
+            R.drawable.ic_play,
+        )
+
+        if (isPlay) {
+            player.applyState(AudioPlayer.State.STARTED)
+            timer.run()
+        } else {
+            player.applyState(AudioPlayer.State.PAUSED)
+            timer.pause()
+        }
+    }
+
+    override fun onStop() {
+        togglePlayButton()
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        player.applyState(AudioPlayer.State.RELEASED)
+        timer.reset()
+        super.onDestroy()
+    }
+
     companion object {
         private const val DELIMITER = '/'
         private const val ALBUM_SIZE = "512x512bb.jpg"
-        private val timer = "00:00"
+        private const val PREVIEW_TIME = 30000L
+        private const val TIMER_DELAY = 1000L
         private const val EMPTY_STRING = ""
         private const val TRACK = "track"
+    }
+
+    enum class Button {
+        MEDIA,
+        PLAYER,
+        FAVOURITE;
     }
 }
