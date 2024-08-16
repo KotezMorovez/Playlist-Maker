@@ -1,4 +1,4 @@
-package com.example.playlist_maker.ui
+package com.example.playlist_maker.presentation.feature.settings
 
 import android.content.Intent
 import android.net.Uri
@@ -9,9 +9,12 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import com.example.playlist_maker.App
 import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.ActivitySettingsBinding
+import com.example.playlist_maker.di.Injector
+import com.example.playlist_maker.domain.interactors.ThemeInteractor
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity: AppCompatActivity() {
     private lateinit var viewBinding: ActivitySettingsBinding
+    private val themeInteractor: ThemeInteractor = Injector.getThemeInteractor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +36,7 @@ class SettingsActivity : AppCompatActivity() {
             darkThemeSwitch.isChecked = AppCompatDelegate.getDefaultNightMode() == MODE_NIGHT_YES
 
             darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
-                (applicationContext as App).saveTheme(checked)
+                themeInteractor.saveTheme(checked)
                 (applicationContext as App).switchTheme(checked)
             }
 

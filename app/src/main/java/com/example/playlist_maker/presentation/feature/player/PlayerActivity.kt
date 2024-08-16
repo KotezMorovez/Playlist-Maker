@@ -1,4 +1,4 @@
-package com.example.playlist_maker.ui
+package com.example.playlist_maker.presentation.feature.player
 
 import android.os.Build
 import android.os.Bundle
@@ -11,11 +11,11 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlist_maker.R
-import com.example.playlist_maker.ui.common.Timer
-import com.example.playlist_maker.common.dpToPx
+import com.example.playlist_maker.utils.Timer
+import com.example.playlist_maker.utils.dpToPx
 import com.example.playlist_maker.databinding.ActivityPlayerBinding
-import com.example.playlist_maker.ui.common.AudioPlayer
-import com.example.playlist_maker.ui.search.adapter.TrackItem
+import com.example.playlist_maker.utils.AudioPlayer
+import com.example.playlist_maker.presentation.models.TrackItem
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityPlayerBinding

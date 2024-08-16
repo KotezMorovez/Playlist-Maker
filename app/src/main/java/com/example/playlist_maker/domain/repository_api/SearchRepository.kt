@@ -1,4 +1,4 @@
-package com.example.playlist_maker.domain.repository
+package com.example.playlist_maker.domain.repository_api
 
 import com.example.playlist_maker.domain.model.TrackList
 import com.example.playlist_maker.domain.model.request.SearchRequest

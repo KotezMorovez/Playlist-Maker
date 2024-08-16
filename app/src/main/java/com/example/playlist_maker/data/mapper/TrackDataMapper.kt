@@ -28,3 +28,18 @@ fun TrackEntity.toDomain(): Track {
         previewUrl = this.previewUrl
     )
 }
+
+fun Track.toEntity(): TrackEntity {
+    return TrackEntity(
+        trackId = this.trackId,
+        trackName = this.trackName,
+        artistName = this.artistName,
+        trackTimeMillis = this.trackTimeMillis,
+        collectionName = this.collectionName,
+        releaseDate = this.releaseDate,
+        primaryGenreName = this.primaryGenreName,
+        country = this.country,
+        artworkUrl100 = this.artworkUrl100,
+        previewUrl = this.previewUrl
+    )
+}

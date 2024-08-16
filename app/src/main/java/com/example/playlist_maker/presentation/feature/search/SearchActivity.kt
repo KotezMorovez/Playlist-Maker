@@ -1,4 +1,4 @@
-package com.example.playlist_maker.ui.search
+package com.example.playlist_maker.presentation.feature.search
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,40 +13,38 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlist_maker.R
-import com.example.playlist_maker.ui.common.Debouncer
-import com.example.playlist_maker.ui.common.ClickThrottler
-import com.example.playlist_maker.data.repository.SearchRepositoryImpl
+import com.example.playlist_maker.utils.Debouncer
+import com.example.playlist_maker.utils.ClickThrottler
 import com.example.playlist_maker.databinding.ActivitySearchBinding
+import com.example.playlist_maker.di.Injector
 import com.example.playlist_maker.domain.model.request.SearchRequest
-import com.example.playlist_maker.ui.PlayerActivity
-import com.example.playlist_maker.ui.search.adapter.SearchAdapter
-import com.example.playlist_maker.ui.search.adapter.TrackItem
-import com.example.playlist_maker.ui.search.common.HistoryManager
+import com.example.playlist_maker.presentation.feature.player.PlayerActivity
+import com.example.playlist_maker.presentation.feature.search.adapter.SearchAdapter
+import com.example.playlist_maker.presentation.models.TrackItem
+import com.example.playlist_maker.domain.model.Track
+import com.example.playlist_maker.presentation.mapper.toUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.Locale
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivitySearchBinding
     private var searchRequest = EMPTY_STRING
     private var state = State.HISTORY
-    private val searchRepository = SearchRepositoryImpl.getInstance()
     private var loadTracksJob: Job? = null
     private val searchAdapter: SearchAdapter
     private val historyAdapter: SearchAdapter
     private val textWatcher: TextWatcher
-    private val searchDebouncer: Debouncer
+    private val searchInteractor = Injector.getSearchUseCase()
+    private val historyInteractor = Injector.getHistoryInteractor()
     private val itemClickThrottler = ClickThrottler(CLICK_DELAY)
-
-    init {
-        searchDebouncer = Debouncer(SEARCH_DELAY) {
+    private var historyDomainList: List<Track> = listOf()
+    private var searchResultDomainList: List<Track> = listOf()
+    private val searchDebouncer: Debouncer by lazy {
+        Debouncer(SEARCH_DELAY) {
             with(viewBinding) {
-                // очистка поля работает некорректно, при нажатии x случается отправка пустого запроса
                 val imm = getSystemService(InputMethodManager::class.java)
 
                 imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
@@ -55,26 +53,19 @@ class SearchActivity : AppCompatActivity() {
                 trySetHistoryState()
             }
         }
+    }
 
-        searchAdapter = SearchAdapter(onItemClickListener = { item ->
+    init {
+        searchAdapter = SearchAdapter(onItemClickListener = {
             if (itemClickThrottler.clickThrottle()) {
-                val list = HistoryManager.updateList(item)
-                this@SearchActivity.updateHistoryAdapterList(list)
-
-                val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
-                intent.putExtra(TRACK, item)
-                startActivity(intent)
+                updateHistory(it, searchResultDomainList)
+                moveToPlayerActivity(it)
             }
         })
-
-        historyAdapter = SearchAdapter(onItemClickListener = { item ->
+        historyAdapter = SearchAdapter(onItemClickListener = {
             if (itemClickThrottler.clickThrottle()) {
-                val list = HistoryManager.updateList(item)
-                this@SearchActivity.updateHistoryAdapterList(list)
-
-                val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
-                intent.putExtra(TRACK, item)
-                startActivity(intent)
+                updateHistory(it, historyDomainList)
+                moveToPlayerActivity(it)
             }
         })
 
@@ -99,10 +90,29 @@ class SearchActivity : AppCompatActivity() {
         viewBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        HistoryManager.initHistoryStorage(this)
-        historyAdapter.setItems(HistoryManager.getHistory())
+        historyDomainList = historyInteractor.getHistory()
+        historyAdapter.setItems(historyDomainList.map { it.toUI() })
 
         initUi()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(REQUEST, searchRequest)
+        outState.putInt(STATE, state.ordinal)
+
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        with(viewBinding) {
+            searchRequest = savedInstanceState.getString(REQUEST, searchRequest)
+            state = State.fromIndex(savedInstanceState.getInt(STATE))
+
+            searchEditText.setText(searchRequest)
+            applyState(state)
+        }
+
+        super.onRestoreInstanceState(savedInstanceState)
     }
 
     private fun initUi() {
@@ -152,7 +162,7 @@ class SearchActivity : AppCompatActivity() {
             historyRecyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
 
             clearHistoryButton.setOnClickListener {
-                HistoryManager.clearHistory()
+                historyInteractor.clearHistory()
                 updateHistoryAdapterList(listOf())
                 trySetHistoryState()
             }
@@ -165,7 +175,7 @@ class SearchActivity : AppCompatActivity() {
         loadTracksJob?.cancel()
 
         loadTracksJob = CoroutineScope(Dispatchers.IO).launch {
-            val result = searchRepository.getTracks(
+            val result = searchInteractor.getTracks(
                 SearchRequest(
                     text = text
                 )
@@ -174,31 +184,8 @@ class SearchActivity : AppCompatActivity() {
             if (result.isSuccess) {
                 val response = result.getOrNull()
                 if (response?.resultCount != 0) {
-                    val tracks = response?.tracks?.map {
-                        val date = SimpleDateFormat(
-                            "yyyy-MM-dd'T'HH:mm:ss'Z'",
-                            Locale.getDefault()
-                        ).parse(it.releaseDate) ?: LocalDate.now()
-
-                        TrackItem(
-                            trackId = it.trackId,
-                            trackName = it.trackName,
-                            artistName = it.artistName,
-                            trackTime = SimpleDateFormat(
-                                "mm:ss",
-                                Locale.getDefault()
-                            ).format(it.trackTimeMillis),
-                            collectionName = it.collectionName,
-                            releaseDate = SimpleDateFormat(
-                                "yyyy",
-                                Locale.getDefault()
-                            ).format(date),
-                            primaryGenreName = it.primaryGenreName,
-                            country = it.country,
-                            artworkUrl100 = it.artworkUrl100,
-                            previewUrl = it.previewUrl
-                        )
-                    } ?: listOf()
+                    searchResultDomainList = response?.tracks ?: listOf()
+                    val tracks = searchResultDomainList.map { it.toUI() }
 
                     withContext(Dispatchers.Main) {
                         state = State.DATA
@@ -232,35 +219,16 @@ class SearchActivity : AppCompatActivity() {
         state = if (
             searchRequest.isEmpty()
             && viewBinding.searchEditText.hasFocus()
-            && !HistoryManager.isHistoryEmpty()
+            && !historyInteractor.isHistoryEmpty()
         ) {
             State.HISTORY
-        } else  if(searchRequest.isNotEmpty()){
+        } else if (searchRequest.isNotEmpty()) {
             State.LOADING
         } else {
             State.DATA
         }
 
         applyState(state)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(REQUEST, searchRequest)
-        outState.putInt(STATE, state.ordinal)
-
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        with(viewBinding) {
-            searchRequest = savedInstanceState.getString(REQUEST, searchRequest)
-            state = State.fromIndex(savedInstanceState.getInt(STATE))
-
-            searchEditText.setText(searchRequest)
-            applyState(state)
-        }
-
-        super.onRestoreInstanceState(savedInstanceState)
     }
 
     private fun applyState(state: State) {
@@ -293,6 +261,20 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun updateHistory(item: TrackItem, tracksList: List<Track>) {
+        val track = tracksList.firstOrNull { it.trackId == item.trackId }
+        if (track != null) {
+            historyDomainList = historyInteractor.updateHistory(track)
+            this@SearchActivity.updateHistoryAdapterList(historyDomainList.map { it.toUI() })
+        }
+    }
+
+    private fun moveToPlayerActivity(item: TrackItem) {
+        val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+        intent.putExtra(TRACK, item)
+        startActivity(intent)
     }
 
     companion object {

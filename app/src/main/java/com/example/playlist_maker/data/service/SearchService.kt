@@ -3,16 +3,15 @@ package com.example.playlist_maker.data.service
 import android.util.Log
 import com.example.playlist_maker.data.model.ITunesEntity
 import com.example.playlist_maker.domain.model.request.SearchRequest
-import retrofit2.awaitResponse
 import java.lang.Exception
 
 interface SearchService {
     suspend fun getSearch (searchRequest: SearchRequest): Result<ITunesEntity>
 }
 
-class SearchServiceImpl: SearchService {
-    private val iTunesApi: ITunesSearchAPI = ITunesSearchAPI.getInstance()
-
+class SearchServiceImpl(
+    private val iTunesApi: ITunesSearchAPI
+): SearchService {
     override suspend fun getSearch (searchRequest: SearchRequest): Result<ITunesEntity> {
         try {
             val response = iTunesApi.getSearch(text = searchRequest.text)

@@ -1,4 +1,4 @@
-package com.example.playlist_maker.ui.search.adapter
+package com.example.playlist_maker.presentation.models
 
 
 import android.os.Parcelable

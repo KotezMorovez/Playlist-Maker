@@ -1,4 +1,4 @@
-package com.example.playlist_maker.ui
+package com.example.playlist_maker.presentation.feature.main
 
 import android.content.Intent
 import android.os.Build
@@ -6,7 +6,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.ActivityMainBinding
-import com.example.playlist_maker.ui.search.SearchActivity
+import com.example.playlist_maker.presentation.feature.settings.SettingsActivity
+import com.example.playlist_maker.presentation.feature.search.SearchActivity
+import com.example.playlist_maker.presentation.feature.library.LibraryActivity
 
 
 class MainActivity : AppCompatActivity() {
