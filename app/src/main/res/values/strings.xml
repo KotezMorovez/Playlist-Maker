@@ -34,4 +34,5 @@
     <string name="player_track_info_genre">Жанр</string>
     <string name="player_track_info_country">Страна</string>
     <string name="player_default_time">00:30</string>
+    <string name="player_no_data">-</string>
 </resources>

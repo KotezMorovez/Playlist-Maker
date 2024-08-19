@@ -11,7 +11,7 @@ data class TrackItem(
     val artistName: String,
     val trackTime: String,
     val collectionName: String?,
-    val releaseDate: String,
+    val releaseDate: String?,
     val primaryGenreName: String,
     val country: String,
     val artworkUrl100: String?,

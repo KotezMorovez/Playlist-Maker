@@ -14,7 +14,9 @@ import com.example.playlist_maker.R
 import com.example.playlist_maker.utils.Timer
 import com.example.playlist_maker.utils.dpToPx
 import com.example.playlist_maker.databinding.ActivityPlayerBinding
-import com.example.playlist_maker.utils.AudioPlayer
+import com.example.playlist_maker.di.Injector
+import com.example.playlist_maker.presentation.mapper.toDomain
+import com.example.playlist_maker.presentation.models.PlayerStateUI
 import com.example.playlist_maker.presentation.models.TrackItem
 
 class PlayerActivity : AppCompatActivity() {
@@ -23,7 +25,7 @@ class PlayerActivity : AppCompatActivity() {
     private var isPlay: Boolean = false
     private var isFavourite: Boolean = false
     private var isInMedia: Boolean = false
-    private val player = AudioPlayer()
+    private val player = Injector.getPlayerInteractor()
     private lateinit var timer: Timer
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,6 +152,10 @@ class PlayerActivity : AppCompatActivity() {
 
             trackInfoReleaseDateItem.infoHeaderTextView.text =
                 this@PlayerActivity.getText(R.string.player_track_info_release_date)
+            if (item?.releaseDate == null) {
+                trackInfoReleaseDateItem.infoBodyTextView.text =
+                    this@PlayerActivity.getText(R.string.player_no_data)
+            }
             trackInfoReleaseDateItem.infoBodyTextView.text = item?.releaseDate
 
             trackInfoGenreItem.infoHeaderTextView.text =
@@ -170,10 +176,10 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         if (isPlay) {
-            player.applyState(AudioPlayer.State.STARTED)
+            player.applyState(PlayerStateUI.STARTED.toDomain())
             timer.run()
         } else {
-            player.applyState(AudioPlayer.State.PAUSED)
+            player.applyState(PlayerStateUI.PAUSED.toDomain())
             timer.pause()
         }
     }
@@ -184,7 +190,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        player.applyState(AudioPlayer.State.RELEASED)
+        player.applyState(PlayerStateUI.RELEASED.toDomain())
         timer.reset()
         super.onDestroy()
     }

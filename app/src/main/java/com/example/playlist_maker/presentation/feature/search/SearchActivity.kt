@@ -17,7 +17,6 @@ import com.example.playlist_maker.utils.Debouncer
 import com.example.playlist_maker.utils.ClickThrottler
 import com.example.playlist_maker.databinding.ActivitySearchBinding
 import com.example.playlist_maker.di.Injector
-import com.example.playlist_maker.domain.model.request.SearchRequest
 import com.example.playlist_maker.presentation.feature.player.PlayerActivity
 import com.example.playlist_maker.presentation.feature.search.adapter.SearchAdapter
 import com.example.playlist_maker.presentation.models.TrackItem
@@ -175,11 +174,7 @@ class SearchActivity : AppCompatActivity() {
         loadTracksJob?.cancel()
 
         loadTracksJob = CoroutineScope(Dispatchers.IO).launch {
-            val result = searchInteractor.getTracks(
-                SearchRequest(
-                    text = text
-                )
-            )
+            val result = searchInteractor.getTracks(text)
 
             if (result.isSuccess) {
                 val response = result.getOrNull()

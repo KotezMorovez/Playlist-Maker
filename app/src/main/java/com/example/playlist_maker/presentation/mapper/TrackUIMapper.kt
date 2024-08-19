@@ -18,10 +18,10 @@ fun Track.toUI(): TrackItem {
                 Locale.getDefault()
             ).format(date)
         } else {
-            "no data"
+            null
         }
     } else {
-        "no data"
+        null
     }
 
     return TrackItem(

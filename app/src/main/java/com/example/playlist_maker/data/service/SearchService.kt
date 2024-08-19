@@ -2,19 +2,18 @@ package com.example.playlist_maker.data.service
 
 import android.util.Log
 import com.example.playlist_maker.data.model.ITunesEntity
-import com.example.playlist_maker.domain.model.request.SearchRequest
 import java.lang.Exception
 
 interface SearchService {
-    suspend fun getSearch (searchRequest: SearchRequest): Result<ITunesEntity>
+    suspend fun getSearch (searchRequest: String): Result<ITunesEntity>
 }
 
 class SearchServiceImpl(
     private val iTunesApi: ITunesSearchAPI
 ): SearchService {
-    override suspend fun getSearch (searchRequest: SearchRequest): Result<ITunesEntity> {
+    override suspend fun getSearch (searchRequest: String): Result<ITunesEntity> {
         try {
-            val response = iTunesApi.getSearch(text = searchRequest.text)
+            val response = iTunesApi.getSearch(text = searchRequest)
 
             if (!response.isSuccessful) {
                 Log.e (TAG, response.code().toString())
