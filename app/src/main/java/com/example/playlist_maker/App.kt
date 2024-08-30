@@ -1,39 +1,44 @@
 package com.example.playlist_maker
 
 import android.app.Application
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlist_maker.di.Injector
 
 class App : Application() {
-    private lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate() {
         super.onCreate()
-        sharedPrefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
+        Injector.initializeDependencyWithContext(this)
+        val themeInteractor = Injector.getThemeInteractor()
 
-        val firstLaunchFlag = sharedPrefs.getBoolean(IS_FIRST_LAUNCH, true)
+        val firstLaunchFlag = themeInteractor.getFirstLaunchFlag()
 
         val darkTheme = if (firstLaunchFlag) {
-            sharedPrefs.edit().putBoolean(IS_FIRST_LAUNCH, false).apply()
+            themeInteractor.disableFirstLaunchFlag()
+            val config = this.resources
+                ?.configuration
+                ?.uiMode
+                ?.and(Configuration.UI_MODE_NIGHT_MASK)
 
-            val darkMode = when (this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    true
-                }
+            val darkMode =
+                when (config) {
+                    Configuration.UI_MODE_NIGHT_YES -> {
+                        true
+                    }
 
-                Configuration.UI_MODE_NIGHT_NO -> {
-                    false
-                }
+                    Configuration.UI_MODE_NIGHT_NO -> {
+                        false
+                    }
 
-                else -> {
-                    false
+                    else -> {
+                        false
+                    }
                 }
-            }
-            saveTheme(darkMode)
+            themeInteractor.saveTheme(darkMode)
             darkMode
         } else {
-            sharedPrefs.getBoolean(IS_DARK_THEME, false)
+            themeInteractor.getTheme()
         }
 
         switchTheme(darkTheme)
@@ -47,17 +52,5 @@ class App : Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
-    }
-
-    fun saveTheme(isDarkTheme: Boolean) {
-        sharedPrefs.edit()
-            .putBoolean(IS_DARK_THEME, isDarkTheme)
-            .apply()
-    }
-
-    companion object {
-        private const val PREFERENCES = "playlist_maker_shared_preferences"
-        private const val IS_FIRST_LAUNCH = "is_first_launch"
-        private const val IS_DARK_THEME = "is_dark_theme"
     }
 }
