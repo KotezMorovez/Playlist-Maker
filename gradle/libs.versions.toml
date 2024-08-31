@@ -3,21 +3,22 @@ agp = "8.3.2"
 compiler = "4.16.0"
 glide = "4.16.0"
 gson = "2.10.1"
-kotlin = "1.9.0"
+kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.7.0"
+lifecycleRuntimeKtx = "2.8.4"
 loggingInterceptor = "4.11.0"
 material = "1.12.0"
 activity = "1.9.0"
 constraintlayout = "2.1.4"
 retrofit = "2.9.0"
 viewbinding = "8.4.1"
-parcelize = "2.0.0"
 
 [libraries]
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
@@ -37,5 +38,5 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-jetbrainsKotlinPluginParcelize = {id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "parcelize" }
+jetbrainsKotlinPluginParcelize = {id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 

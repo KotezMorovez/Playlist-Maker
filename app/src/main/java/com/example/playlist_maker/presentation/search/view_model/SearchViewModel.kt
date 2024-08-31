@@ -1,0 +1,114 @@
+package com.example.playlist_maker.presentation.search.view_model
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.playlist_maker.domain.prefs.interactor.HistoryInteractor
+import com.example.playlist_maker.domain.itunes_api.interactor.SearchUseCase
+import com.example.playlist_maker.domain.prefs.dto.Track
+import com.example.playlist_maker.presentation.search.dto.TrackItem
+import com.example.playlist_maker.presentation.search.dto.toUI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+class SearchViewModel(
+    private val historyInteractor: HistoryInteractor,
+    private val searchUseCase: SearchUseCase
+) : ViewModel() {
+    private var _currentState: MutableLiveData<State> = MutableLiveData(State.History(listOf()))
+    val currentState: LiveData<State>
+        get() = _currentState
+
+    private var historyDomainList: List<Track> = listOf()
+    private var searchResultDomainList: List<Track> = listOf()
+    private var loadTracksJob: Job? = null
+
+    var lastSearchRequest = EMPTY_STRING
+        private set
+
+    fun init() {
+        historyDomainList = historyInteractor.getHistory()
+        _currentState.value = State.History(historyDomainList.map { it.toUI() })
+    }
+
+    fun updateHistory(item: TrackItem, isHistoryList: Boolean) {
+        val track = getTrack(item, isHistoryList)
+        if (track != null) {
+            historyDomainList = historyInteractor.updateHistory(track)
+            _currentState.value = State.History(historyDomainList.map { it.toUI() })
+        }
+    }
+
+    fun setSearchRequest(s: String) {
+        lastSearchRequest = s
+    }
+
+    fun clearHistory() {
+        historyInteractor.clearHistory()
+    }
+
+    fun actualizeState(isFieldHasFocus: Boolean) {
+        _currentState.value = if (
+            lastSearchRequest.isEmpty()
+            && isFieldHasFocus
+            && !historyInteractor.isHistoryEmpty()
+        ) {
+            State.History(historyDomainList.map { it.toUI() })
+        } else if (lastSearchRequest.isNotEmpty()) {
+            State.Loading
+        } else {
+            State.Data(searchResultDomainList.map { it.toUI() })
+        }
+    }
+
+    fun loadTracks(text: String) {
+        loadTracksJob?.cancel()
+
+        loadTracksJob = viewModelScope.launch {
+            val result = searchUseCase.getTracks(text)
+
+            if (result.isSuccess) {
+                val response = result.getOrNull()
+                if (response?.resultCount != 0) {
+                    searchResultDomainList = response?.tracks ?: listOf()
+
+                    withContext(Dispatchers.Main) {
+                        _currentState.value = State.Data(searchResultDomainList.map { it.toUI() })
+                    }
+
+                } else {
+                    withContext(Dispatchers.Main) {
+                        _currentState.value = State.NoData
+                    }
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    _currentState.value = State.Error
+                }
+            }
+        }
+    }
+
+    fun getTrack(item: TrackItem, isHistoryList: Boolean): Track? {
+        return if (isHistoryList) {
+            historyDomainList.firstOrNull { it.trackId == item.trackId }
+        } else {
+            searchResultDomainList.firstOrNull { it.trackId == item.trackId }
+        }
+    }
+
+    companion object {
+        private const val EMPTY_STRING = ""
+    }
+
+    sealed class State {
+        class Data(val list: List<TrackItem>) : State()
+        data object NoData : State()
+        data object Error : State()
+        class History(val list: List<TrackItem>) : State()
+        data object Loading : State()
+    }
+}
