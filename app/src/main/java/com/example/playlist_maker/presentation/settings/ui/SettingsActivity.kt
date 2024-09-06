@@ -3,6 +3,7 @@ package com.example.playlist_maker.presentation.settings.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
@@ -16,17 +17,13 @@ import com.example.playlist_maker.presentation.settings.view_model.SettingsViewM
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivitySettingsBinding
-    private lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel: SettingsViewModel by viewModels { Injector.getViewModelFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewBinding = ActivitySettingsBinding.inflate(layoutInflater)
-        viewModelFactory = Injector.getViewModelFactory()
-        viewModel = ViewModelProvider(this, viewModelFactory)[SettingsViewModel::class.java]
-
         setContentView(viewBinding.root)
+
         initUi()
     }
 
@@ -44,7 +41,7 @@ class SettingsActivity : AppCompatActivity() {
             darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
                 viewModel.saveCurrentTheme(checked)
 
-                (applicationContext as App).switchTheme(checked) //???
+                (applicationContext as App).switchTheme(checked)
             }
 
             share.setOnClickListener {

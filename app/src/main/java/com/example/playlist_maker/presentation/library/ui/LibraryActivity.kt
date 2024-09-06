@@ -1,25 +1,19 @@
 package com.example.playlist_maker.presentation.library.ui
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlist_maker.databinding.ActivityLibraryBinding
 import com.example.playlist_maker.di.Injector
-import com.example.playlist_maker.di.ViewModelFactory
-import com.example.playlist_maker.presentation.library.view_model.LibraryViewModel
 
 class LibraryActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityLibraryBinding
-    private lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: ViewModel
+    private val viewModel: ViewModel by viewModels { Injector.getViewModelFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityLibraryBinding.inflate(layoutInflater)
-        viewModelFactory = Injector.getViewModelFactory()
-        viewModel = ViewModelProvider(this, viewModelFactory)[LibraryViewModel::class.java]
-
         setContentView(viewBinding.root)
 
         initUi()

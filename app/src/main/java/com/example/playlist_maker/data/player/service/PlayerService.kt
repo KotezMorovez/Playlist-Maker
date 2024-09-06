@@ -6,7 +6,7 @@ import com.example.playlist_maker.data.player.dto.PlayerStateEntity
 interface PlayerService {
     fun preparePlayer(previewUrl: String)
     fun applyState(state: PlayerStateEntity)
-    fun checkPlayerState(): Boolean
+    fun isStatePrepared(): Boolean
 }
 
 class PlayerServiceImpl : PlayerService {
@@ -50,7 +50,7 @@ class PlayerServiceImpl : PlayerService {
         }
     }
 
-    override fun checkPlayerState(): Boolean {
+    override fun isStatePrepared(): Boolean {
         return isPrepared
     }
 }

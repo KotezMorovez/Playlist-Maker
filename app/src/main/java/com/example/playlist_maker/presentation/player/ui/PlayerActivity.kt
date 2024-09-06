@@ -2,32 +2,28 @@ package com.example.playlist_maker.presentation.player.ui
 
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlist_maker.R
 import com.example.playlist_maker.utils.dpToPx
 import com.example.playlist_maker.databinding.ActivityPlayerBinding
 import com.example.playlist_maker.di.Injector
-import com.example.playlist_maker.di.ViewModelFactory
 import com.example.playlist_maker.domain.prefs.dto.Track
 import com.example.playlist_maker.presentation.player.view_model.PlayerViewModel
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityPlayerBinding
-    private lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel: PlayerViewModel by viewModels { Injector.getViewModelFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityPlayerBinding.inflate(layoutInflater)
-        viewModelFactory = Injector.getViewModelFactory()
-        viewModel = ViewModelProvider(this, viewModelFactory)[PlayerViewModel::class.java]
         setContentView(viewBinding.root)
 
         val item = if (Build.VERSION.SDK_INT < 33) {
@@ -37,8 +33,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         if (item != null) {
-            viewModel.setTrack(item)
-            viewModel.preparePlayerScreen(TIMER_DELAY, PREVIEW_TIME)
+            viewModel.initialize(item)
         }
 
         initUi()
@@ -192,8 +187,6 @@ class PlayerActivity : AppCompatActivity() {
     companion object {
         private const val DELIMITER = '/'
         private const val ALBUM_SIZE = "512x512bb.jpg"
-        private const val PREVIEW_TIME = 30000L
-        private const val TIMER_DELAY = 1000L
         private const val EMPTY_STRING = ""
         private const val TRACK = "track"
     }

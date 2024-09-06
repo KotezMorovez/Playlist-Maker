@@ -22,11 +22,9 @@ class PlayerViewModel(
     val currentState: LiveData<State>
         get() = _currentState
 
-    fun setTrack(item: Track) {
+    fun initialize(item: Track) {
         _currentState.value = _currentState.value?.copy(track = item.toPlayerUI())
-    }
 
-    fun preparePlayerScreen(delay: Long, time: Long) {
         if (!checkPlayer()) {
             val uri = _currentState.value?.track?.previewUrl
             if (uri != null) {
@@ -35,7 +33,7 @@ class PlayerViewModel(
         }
 
         if (timer == null) {
-            initTimer(delay, time)
+            initTimer(TIMER_DELAY, PREVIEW_TIME)
         }
     }
 
@@ -79,7 +77,7 @@ class PlayerViewModel(
     }
 
     private fun checkPlayer(): Boolean {
-        return playerInteractor.checkPlayerState()
+        return playerInteractor.isStatePrepared()
     }
 
     private fun preparePlayer(uri: String) {
@@ -130,8 +128,10 @@ class PlayerViewModel(
     }
 
     companion object {
-        private const val PREVIEW_TIME = "00:30"
+        private const val PREVIEW_TIME_TEXT = "00:30"
         private const val END_OF_PREVIEW = "00:00"
+        private const val PREVIEW_TIME = 30000L
+        private const val TIMER_DELAY = 1000L
     }
 
     data class State(
@@ -143,7 +143,7 @@ class PlayerViewModel(
     ) {
         companion object {
             fun default(): State {
-                return State(timeLeft = PREVIEW_TIME)
+                return State(timeLeft = PREVIEW_TIME_TEXT)
             }
         }
     }

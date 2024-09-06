@@ -6,7 +6,7 @@ import com.example.playlist_maker.domain.player.dto.PlayerState
 interface PlayerInteractor {
     fun preparePlayer(previewUrl: String)
     fun applyState(state: PlayerState)
-    fun checkPlayerState(): Boolean
+    fun isStatePrepared(): Boolean
 }
 
 class PlayerInteractorImpl(
@@ -20,7 +20,7 @@ class PlayerInteractorImpl(
         playerRepository.applyState(state)
     }
 
-    override fun checkPlayerState(): Boolean {
-        return playerRepository.checkPlayerState()
+    override fun isStatePrepared(): Boolean {
+        return playerRepository.isStatePrepared()
     }
 }

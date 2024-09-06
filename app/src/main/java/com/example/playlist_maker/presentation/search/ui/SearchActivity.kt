@@ -7,18 +7,17 @@ import android.text.TextWatcher
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlist_maker.R
 import com.example.playlist_maker.utils.Debouncer
 import com.example.playlist_maker.utils.ClickThrottler
 import com.example.playlist_maker.databinding.ActivitySearchBinding
 import com.example.playlist_maker.di.Injector
-import com.example.playlist_maker.di.ViewModelFactory
 import com.example.playlist_maker.presentation.player.ui.PlayerActivity
 import com.example.playlist_maker.presentation.search.view_model.SearchViewModel
 import com.example.playlist_maker.presentation.search.dto.TrackItem
@@ -26,8 +25,7 @@ import com.example.playlist_maker.presentation.search.ui.adapter.SearchAdapter
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivitySearchBinding
-    private lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModels { Injector.getViewModelFactory() }
     private val searchAdapter: SearchAdapter
     private val historyAdapter: SearchAdapter
     private val textWatcher: TextWatcher
@@ -48,14 +46,12 @@ class SearchActivity : AppCompatActivity() {
     init {
         searchAdapter = SearchAdapter(onItemClickListener = {
             if (itemClickThrottler.clickThrottle()) {
-                updateHistory(it, false)
-                moveToPlayerActivity(it, false)
+                viewModel.handleItemClick(it, false)
             }
         })
         historyAdapter = SearchAdapter(onItemClickListener = {
             if (itemClickThrottler.clickThrottle()) {
-                updateHistory(it, true)
-                moveToPlayerActivity(it, true)
+                viewModel.handleItemClick(it, true)
             }
         })
 
@@ -78,9 +74,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivitySearchBinding.inflate(layoutInflater)
-        viewModelFactory = Injector.getViewModelFactory()
-        viewModel = ViewModelProvider(this, viewModelFactory)[SearchViewModel::class.java]
-
         setContentView(viewBinding.root)
 
         viewModel.init()
@@ -116,6 +109,10 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.requestFocus()
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
+            refreshButton.setOnClickListener {
+                viewModel.loadTracks(viewBinding.searchEditText.text.toString())
+            }
+
             searchFieldClearButton.setOnClickListener {
                 searchEditText.removeTextChangedListener(textWatcher)
                 searchEditText.setText(EMPTY_STRING)
@@ -146,6 +143,14 @@ class SearchActivity : AppCompatActivity() {
         viewModel.currentState.observe(this) {
             applyState(it)
         }
+
+        viewModel.navigationEvent.observe(this) {
+            if (it != null) {
+                val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+                intent.putExtra(TRACK, it)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun applyState(state: SearchViewModel.State) {
@@ -169,10 +174,6 @@ class SearchActivity : AppCompatActivity() {
 
                 is SearchViewModel.State.Error -> {
                     noInternetErrorContainer.isVisible = true
-
-                    refreshButton.setOnClickListener {
-                        viewModel.loadTracks(viewBinding.searchEditText.text.toString())
-                    }
                 }
 
                 is SearchViewModel.State.History -> {
@@ -185,19 +186,6 @@ class SearchActivity : AppCompatActivity() {
                     searchLoaderProgressBar.isVisible = true
                 }
             }
-        }
-    }
-
-    private fun updateHistory(item: TrackItem, isHistoryList: Boolean) {
-        viewModel.updateHistory(item, isHistoryList)
-    }
-
-    private fun moveToPlayerActivity(item: TrackItem, isHistoryList: Boolean) {
-        val track = viewModel.getTrack(item, isHistoryList)
-        if (track != null) {
-            val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
-            intent.putExtra(TRACK, track)
-            startActivity(intent)
         }
     }
 

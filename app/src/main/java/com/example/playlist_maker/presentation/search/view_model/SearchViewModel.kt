@@ -9,6 +9,7 @@ import com.example.playlist_maker.domain.itunes_api.interactor.SearchUseCase
 import com.example.playlist_maker.domain.prefs.dto.Track
 import com.example.playlist_maker.presentation.search.dto.TrackItem
 import com.example.playlist_maker.presentation.search.dto.toUI
+import com.example.playlist_maker.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -22,6 +23,10 @@ class SearchViewModel(
     val currentState: LiveData<State>
         get() = _currentState
 
+    private val _navigationEvent = SingleLiveEvent<Track>()
+    val navigationEvent: LiveData<Track>
+        get() = _navigationEvent
+
     private var historyDomainList: List<Track> = listOf()
     private var searchResultDomainList: List<Track> = listOf()
     private var loadTracksJob: Job? = null
@@ -34,16 +39,19 @@ class SearchViewModel(
         _currentState.value = State.History(historyDomainList.map { it.toUI() })
     }
 
-    fun updateHistory(item: TrackItem, isHistoryList: Boolean) {
+    fun handleItemClick(item: TrackItem, isHistoryList: Boolean){
         val track = getTrack(item, isHistoryList)
+
         if (track != null) {
             historyDomainList = historyInteractor.updateHistory(track)
+
             _currentState.value = State.History(historyDomainList.map { it.toUI() })
+            _navigationEvent.value = track!!
         }
     }
 
-    fun setSearchRequest(s: String) {
-        lastSearchRequest = s
+    fun setSearchRequest(request: String) {
+        lastSearchRequest = request
     }
 
     fun clearHistory() {
@@ -92,7 +100,7 @@ class SearchViewModel(
         }
     }
 
-    fun getTrack(item: TrackItem, isHistoryList: Boolean): Track? {
+    private fun getTrack(item: TrackItem, isHistoryList: Boolean): Track? {
         return if (isHistoryList) {
             historyDomainList.firstOrNull { it.trackId == item.trackId }
         } else {

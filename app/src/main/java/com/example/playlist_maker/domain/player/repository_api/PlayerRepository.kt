@@ -5,5 +5,5 @@ import com.example.playlist_maker.domain.player.dto.PlayerState
 interface PlayerRepository {
     fun preparePlayer(previewUrl: String)
     fun applyState(state: PlayerState)
-    fun checkPlayerState(): Boolean
+    fun isStatePrepared(): Boolean
 }

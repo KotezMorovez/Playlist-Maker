@@ -16,7 +16,7 @@ class PlayerRepositoryImpl(
         audioPlayerService.applyState(state.toEntity())
     }
 
-    override fun checkPlayerState(): Boolean {
-        return audioPlayerService.checkPlayerState()
+    override fun isStatePrepared(): Boolean {
+        return audioPlayerService.isStatePrepared()
     }
 }
