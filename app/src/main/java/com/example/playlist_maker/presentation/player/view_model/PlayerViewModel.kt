@@ -33,7 +33,7 @@ class PlayerViewModel(
         }
 
         if (timer == null) {
-            initTimer(TIMER_DELAY, PREVIEW_TIME)
+            initTimer()
         }
     }
 
@@ -99,8 +99,8 @@ class PlayerViewModel(
         playerInteractor.applyState(PlayerStateUI.RELEASED.toDomain())
     }
 
-    private fun initTimer(delay: Long, time: Long) {
-        timer = Timer(delay, time) { timeLeft ->
+    private fun initTimer() {
+        timer = Timer(TIMER_DELAY, PREVIEW_TIME) { timeLeft ->
             val timeLeftSeconds = Math.round(timeLeft / 1000f).toLong()
             _currentState.value = _currentState.value?.copy(
                 timeLeft = String.format("%02d:%02d", timeLeftSeconds / 60, timeLeftSeconds)

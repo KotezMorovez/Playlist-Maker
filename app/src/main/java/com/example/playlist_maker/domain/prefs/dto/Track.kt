@@ -1,9 +1,7 @@
 package com.example.playlist_maker.domain.prefs.dto
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
-@Parcelize
 data class Track (
     val trackId: String,
     val trackName: String,
@@ -15,4 +13,4 @@ data class Track (
     val country: String,
     val artworkUrl100: String?,
     val previewUrl: String
-): Parcelable
+): Serializable

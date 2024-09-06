@@ -26,10 +26,10 @@ class PlayerActivity : AppCompatActivity() {
         viewBinding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        val item = if (Build.VERSION.SDK_INT < 33) {
-            intent.extras?.getParcelable(TRACK)
+        val item: Track? = if (Build.VERSION.SDK_INT < 33) {
+            intent.extras?.getSerializable(TRACK) as Track
         } else {
-            intent.extras?.getParcelable(TRACK, Track::class.java)
+            intent.extras?.getSerializable(TRACK, Track::class.java)
         }
 
         if (item != null) {

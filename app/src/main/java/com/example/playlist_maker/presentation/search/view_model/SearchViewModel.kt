@@ -35,17 +35,26 @@ class SearchViewModel(
         private set
 
     fun init() {
-        historyDomainList = historyInteractor.getHistory()
-        _currentState.value = State.History(historyDomainList.map { it.toUI() })
+        val state = _currentState.value
+
+        if (state is State.History) {
+            historyDomainList = historyInteractor.getHistory()
+            _currentState.value = State.History(historyDomainList.map { it.toUI() })
+        } else if (state is State.Data && searchResultDomainList.isNotEmpty()) {
+            _currentState.value = State.Data(searchResultDomainList.map { it.toUI() })
+        }
     }
 
-    fun handleItemClick(item: TrackItem, isHistoryList: Boolean){
+    fun handleItemClick(item: TrackItem, isHistoryList: Boolean) {
         val track = getTrack(item, isHistoryList)
 
         if (track != null) {
             historyDomainList = historyInteractor.updateHistory(track)
 
-            _currentState.value = State.History(historyDomainList.map { it.toUI() })
+            if (isHistoryList) {
+                _currentState.value = State.History(historyDomainList.map { it.toUI() })
+            }
+
             _navigationEvent.value = track!!
         }
     }
@@ -76,25 +85,28 @@ class SearchViewModel(
         loadTracksJob?.cancel()
 
         loadTracksJob = viewModelScope.launch {
-            val result = searchUseCase.getTracks(text)
+            if (text.isNotBlank()) {
+                val result = searchUseCase.getTracks(text)
 
-            if (result.isSuccess) {
-                val response = result.getOrNull()
-                if (response?.resultCount != 0) {
-                    searchResultDomainList = response?.tracks ?: listOf()
+                if (result.isSuccess) {
+                    val response = result.getOrNull()
+                    if (response?.resultCount != 0) {
+                        searchResultDomainList = response?.tracks ?: listOf()
 
-                    withContext(Dispatchers.Main) {
-                        _currentState.value = State.Data(searchResultDomainList.map { it.toUI() })
+                        withContext(Dispatchers.Main) {
+                            _currentState.value =
+                                State.Data(searchResultDomainList.map { it.toUI() })
+                        }
+
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            _currentState.value = State.NoData
+                        }
                     }
-
                 } else {
                     withContext(Dispatchers.Main) {
-                        _currentState.value = State.NoData
+                        _currentState.value = State.Error
                     }
-                }
-            } else {
-                withContext(Dispatchers.Main) {
-                    _currentState.value = State.Error
                 }
             }
         }

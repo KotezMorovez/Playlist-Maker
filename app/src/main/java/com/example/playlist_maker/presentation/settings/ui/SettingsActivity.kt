@@ -5,14 +5,10 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlist_maker.App
 import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.ActivitySettingsBinding
 import com.example.playlist_maker.di.Injector
-import com.example.playlist_maker.di.ViewModelFactory
 import com.example.playlist_maker.presentation.settings.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
@@ -24,6 +20,7 @@ class SettingsActivity : AppCompatActivity() {
         viewBinding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
+        observeData()
         initUi()
     }
 
@@ -36,7 +33,7 @@ class SettingsActivity : AppCompatActivity() {
                 this@SettingsActivity.onBackPressedDispatcher.onBackPressed()
             }
 
-            darkThemeSwitch.isChecked = AppCompatDelegate.getDefaultNightMode() == MODE_NIGHT_YES
+            viewModel.isDarkTheme()
 
             darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
                 viewModel.saveCurrentTheme(checked)
@@ -73,6 +70,12 @@ class SettingsActivity : AppCompatActivity() {
                 val agreementIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(agreementIntent)
             }
+        }
+    }
+
+    private fun observeData() {
+        viewModel.themeState.observe(this) {
+            viewBinding.darkThemeSwitch.isChecked = it
         }
     }
 

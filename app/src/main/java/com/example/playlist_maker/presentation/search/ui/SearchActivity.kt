@@ -20,7 +20,6 @@ import com.example.playlist_maker.databinding.ActivitySearchBinding
 import com.example.playlist_maker.di.Injector
 import com.example.playlist_maker.presentation.player.ui.PlayerActivity
 import com.example.playlist_maker.presentation.search.view_model.SearchViewModel
-import com.example.playlist_maker.presentation.search.dto.TrackItem
 import com.example.playlist_maker.presentation.search.ui.adapter.SearchAdapter
 
 class SearchActivity : AppCompatActivity() {
