@@ -2,7 +2,6 @@ package com.example.playlist_maker.presentation.player.ui
 
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -13,13 +12,13 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlist_maker.R
 import com.example.playlist_maker.utils.dpToPx
 import com.example.playlist_maker.databinding.ActivityPlayerBinding
-import com.example.playlist_maker.di.Injector
 import com.example.playlist_maker.domain.prefs.dto.Track
 import com.example.playlist_maker.presentation.player.view_model.PlayerViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityPlayerBinding
-    private val viewModel: PlayerViewModel by viewModels { Injector.getViewModelFactory() }
+    private val viewModel by viewModel <PlayerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
