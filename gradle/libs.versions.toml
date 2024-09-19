@@ -3,6 +3,7 @@ agp = "8.3.2"
 compiler = "4.16.0"
 glide = "4.16.0"
 gson = "2.10.1"
+koinAndroid = "3.3.0"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -23,6 +24,7 @@ compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compi
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 viewbinding = { group = "androidx.databinding", name = "viewbinding", version.ref = "viewbinding" }
