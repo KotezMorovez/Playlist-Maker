@@ -3,17 +3,16 @@ package com.example.playlist_maker.presentation.settings.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlist_maker.App
 import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.ActivitySettingsBinding
-import com.example.playlist_maker.di.Injector
 import com.example.playlist_maker.presentation.settings.view_model.SettingsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivitySettingsBinding
-    private val viewModel: SettingsViewModel by viewModels { Injector.getViewModelFactory() }
+    private val viewModel by viewModel <SettingsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

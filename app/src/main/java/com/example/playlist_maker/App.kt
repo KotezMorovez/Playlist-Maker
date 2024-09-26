@@ -3,14 +3,24 @@ package com.example.playlist_maker
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlist_maker.di.Injector
+import com.example.playlist_maker.di.dataModule
+import com.example.playlist_maker.di.interactorModule
+import com.example.playlist_maker.di.repositoryModule
+import com.example.playlist_maker.di.viewModelModule
+import com.example.playlist_maker.domain.prefs.interactor.ThemeInteractor
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class App : Application() {
+    private val themeInteractor: ThemeInteractor by inject()
 
     override fun onCreate() {
         super.onCreate()
-        Injector.initializeDependencyWithContext(this)
-        val themeInteractor = Injector.getThemeInteractor()
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+        }
 
         val firstLaunchFlag = themeInteractor.getFirstLaunchFlag()
 

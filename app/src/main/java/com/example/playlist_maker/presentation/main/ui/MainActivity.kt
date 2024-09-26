@@ -3,19 +3,18 @@ package com.example.playlist_maker.presentation.main.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.ActivityMainBinding
-import com.example.playlist_maker.di.Injector
 import com.example.playlist_maker.presentation.settings.ui.SettingsActivity
 import com.example.playlist_maker.presentation.search.ui.SearchActivity
 import com.example.playlist_maker.presentation.library.ui.LibraryActivity
 import com.example.playlist_maker.presentation.main.view_model.MainViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
-    private val viewModel: MainViewModel by viewModels {Injector.getViewModelFactory()}
+    private val viewModel by viewModel <MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

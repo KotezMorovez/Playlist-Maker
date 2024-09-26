@@ -49,6 +49,9 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
+//    DI
+    implementation (libs.koin.android)
+
 //    Media
     implementation(libs.glide)
     annotationProcessor(libs.compiler)

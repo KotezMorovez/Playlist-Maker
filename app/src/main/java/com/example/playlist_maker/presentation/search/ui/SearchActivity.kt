@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
@@ -17,14 +16,14 @@ import com.example.playlist_maker.R
 import com.example.playlist_maker.utils.Debouncer
 import com.example.playlist_maker.utils.ClickThrottler
 import com.example.playlist_maker.databinding.ActivitySearchBinding
-import com.example.playlist_maker.di.Injector
 import com.example.playlist_maker.presentation.player.ui.PlayerActivity
 import com.example.playlist_maker.presentation.search.view_model.SearchViewModel
 import com.example.playlist_maker.presentation.search.ui.adapter.SearchAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivitySearchBinding
-    private val viewModel: SearchViewModel by viewModels { Injector.getViewModelFactory() }
+    private val viewModel by viewModel <SearchViewModel>()
     private val searchAdapter: SearchAdapter
     private val historyAdapter: SearchAdapter
     private val textWatcher: TextWatcher

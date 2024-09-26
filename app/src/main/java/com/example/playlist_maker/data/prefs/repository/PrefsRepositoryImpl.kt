@@ -11,7 +11,7 @@ class PrefsRepositoryImpl(
     private val prefsStorage: PrefsStorage
 ) : PrefsRepository {
     override fun getHistory(): List<Track> {
-        return prefsStorage.getHistory().map { it.toDomain() }
+        return prefsStorage.getHistory().mapNotNull { it.toDomain() }
     }
 
     override fun setHistory(list: List<Track>) {
