@@ -81,10 +81,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/placeholder_search_error" />
+                android:src="@drawable/placeholder_no_data_error" />
 
             <TextView
-                style="@style/SearchPlaceholder"
+                style="@style/WarningPlaceholder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -110,7 +110,7 @@
                 tools:visibility="visible" />
 
             <TextView
-                style="@style/SearchPlaceholder"
+                style="@style/WarningPlaceholder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -156,7 +156,7 @@
                 android:id="@+id/clearHistoryButton"
                 style="@style/SmallButton"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/button_height_body"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginVertical="@dimen/margin_6x"
                 android:text="@string/history_button" />
