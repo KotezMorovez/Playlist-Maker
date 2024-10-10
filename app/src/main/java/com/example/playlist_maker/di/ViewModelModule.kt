@@ -1,5 +1,7 @@
 package com.example.playlist_maker.di
 
+import com.example.playlist_maker.presentation.library.view_model.LibraryFavTracksPageViewModel
+import com.example.playlist_maker.presentation.library.view_model.LibraryPlaylistsPageViewModel
 import com.example.playlist_maker.presentation.library.view_model.LibraryViewModel
 import com.example.playlist_maker.presentation.main.view_model.MainViewModel
 import com.example.playlist_maker.presentation.player.view_model.PlayerViewModel
@@ -11,6 +13,14 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModel {
         LibraryViewModel()
+    }
+
+    viewModel {
+        LibraryFavTracksPageViewModel()
+    }
+
+    viewModel {
+        LibraryPlaylistsPageViewModel()
     }
 
     viewModel {
