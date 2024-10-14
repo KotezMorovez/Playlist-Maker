@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.WindowManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -13,17 +16,17 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlist_maker.R
-import com.example.playlist_maker.utils.Debouncer
-import com.example.playlist_maker.utils.ClickThrottler
-import com.example.playlist_maker.databinding.ActivitySearchBinding
+import com.example.playlist_maker.databinding.FragmentSearchBinding
+import com.example.playlist_maker.presentation.common.BaseFragment
 import com.example.playlist_maker.presentation.player.ui.PlayerActivity
-import com.example.playlist_maker.presentation.search.view_model.SearchViewModel
 import com.example.playlist_maker.presentation.search.ui.adapter.SearchAdapter
+import com.example.playlist_maker.presentation.search.view_model.SearchViewModel
+import com.example.playlist_maker.utils.ClickThrottler
+import com.example.playlist_maker.utils.Debouncer
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
-    private lateinit var viewBinding: ActivitySearchBinding
-    private val viewModel by viewModel <SearchViewModel>()
+class SearchFragment : BaseFragment<FragmentSearchBinding>() {
+    private val viewModel by viewModel<SearchViewModel>()
     private val searchAdapter: SearchAdapter
     private val historyAdapter: SearchAdapter
     private val textWatcher: TextWatcher
@@ -31,7 +34,7 @@ class SearchActivity : AppCompatActivity() {
     private val searchDebouncer: Debouncer by lazy {
         Debouncer(SEARCH_DELAY) {
             with(viewBinding) {
-                val imm = getSystemService(InputMethodManager::class.java)
+                val imm = root.context.getSystemService(InputMethodManager::class.java)
 
                 imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
                 viewModel.loadTracks(searchEditText.text.toString())
@@ -61,7 +64,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (s != null) {
+                if (s != null && s.toString() != viewModel.lastSearchRequest) {
                     viewModel.setSearchRequest(s.toString())
                     searchDebouncer.updateValue()
                 }
@@ -69,26 +72,26 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewBinding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
-
-        viewModel.init()
-
-        initUi()
-        observeData()
+    override fun createViewBinding(): FragmentSearchBinding {
+        return FragmentSearchBinding.inflate(layoutInflater)
     }
 
-    private fun initUi() {
-        with(viewBinding) {
-            this@SearchActivity.setSupportActionBar(searchToolbar)
-            this@SearchActivity.supportActionBar?.title = resources.getText(R.string.search_title)
-            searchToolbar.setNavigationOnClickListener {
-                this@SearchActivity.onBackPressedDispatcher.onBackPressed()
-            }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        viewModel.init()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-            val imm = getSystemService(InputMethodManager::class.java)
+    override fun initUi() {
+        val imm = requireContext().getSystemService(InputMethodManager::class.java)
+
+        with(viewBinding) {
+            (activity as AppCompatActivity).setSupportActionBar(searchToolbar)
+            (activity as AppCompatActivity).supportActionBar?.title =
+                resources.getText(R.string.search_title)
 
             searchEditText.setText(viewModel.lastSearchRequest)
             searchEditText.addTextChangedListener(textWatcher)
@@ -105,7 +108,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             searchEditText.requestFocus()
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            imm.showSoftInput(searchEditText, SOFT_INPUT_ADJUST_NOTHING)
 
             refreshButton.setOnClickListener {
                 viewModel.loadTracks(viewBinding.searchEditText.text.toString())
@@ -124,10 +127,10 @@ class SearchActivity : AppCompatActivity() {
             }
 
             searchRecyclerView.adapter = searchAdapter
-            searchRecyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+            searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
             historyRecyclerView.adapter = historyAdapter
-            historyRecyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+            historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
             clearHistoryButton.setOnClickListener {
                 viewModel.clearHistory()
@@ -137,18 +140,23 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun observeData() {
+    override fun observeData() {
         viewModel.currentState.observe(this) {
             applyState(it)
         }
 
         viewModel.navigationEvent.observe(this) {
             if (it != null) {
-                val intent = Intent(this@SearchActivity, PlayerActivity::class.java)
+                val intent = Intent(requireActivity(), PlayerActivity::class.java)
                 intent.putExtra(TRACK, it)
                 startActivity(intent)
             }
         }
+    }
+
+    override fun onPause() {
+        viewBinding.searchEditText.removeTextChangedListener(textWatcher)
+        super.onPause()
     }
 
     private fun applyState(state: SearchViewModel.State) {

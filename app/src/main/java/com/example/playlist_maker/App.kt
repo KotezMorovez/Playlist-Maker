@@ -50,7 +50,6 @@ class App : Application() {
         } else {
             themeInteractor.getTheme()
         }
-
         switchTheme(darkTheme)
     }
 

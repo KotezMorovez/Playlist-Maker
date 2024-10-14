@@ -2,42 +2,33 @@ package com.example.playlist_maker.presentation.settings.ui
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlist_maker.App
 import com.example.playlist_maker.R
-import com.example.playlist_maker.databinding.ActivitySettingsBinding
+import com.example.playlist_maker.databinding.FragmentSettingsBinding
+import com.example.playlist_maker.presentation.common.BaseFragment
 import com.example.playlist_maker.presentation.settings.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
-    private lateinit var viewBinding: ActivitySettingsBinding
+class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     private val viewModel by viewModel <SettingsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewBinding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
-
-        observeData()
-        initUi()
+    override fun createViewBinding(): FragmentSettingsBinding {
+        return FragmentSettingsBinding.inflate(layoutInflater)
     }
 
-    private fun initUi() {
+    override fun initUi() {
         with(viewBinding) {
-            this@SettingsActivity.setSupportActionBar(settingsToolbar)
-            this@SettingsActivity.supportActionBar?.title =
+            (activity as AppCompatActivity).setSupportActionBar(settingsToolbar)
+            (activity as AppCompatActivity).supportActionBar?.title =
                 resources.getText(R.string.settings_title)
-            settingsToolbar.setNavigationOnClickListener {
-                this@SettingsActivity.onBackPressedDispatcher.onBackPressed()
-            }
 
             viewModel.isDarkTheme()
 
             darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
                 viewModel.saveCurrentTheme(checked)
 
-                (applicationContext as App).switchTheme(checked)
+                (requireActivity().applicationContext as App).switchTheme(checked)
             }
 
             share.setOnClickListener {
@@ -72,7 +63,7 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun observeData() {
+    override fun observeData() {
         viewModel.themeState.observe(this) {
             viewBinding.darkThemeSwitch.isChecked = it
         }

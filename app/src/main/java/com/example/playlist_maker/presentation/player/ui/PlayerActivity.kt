@@ -10,10 +10,10 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlist_maker.R
-import com.example.playlist_maker.utils.dpToPx
 import com.example.playlist_maker.databinding.ActivityPlayerBinding
 import com.example.playlist_maker.domain.prefs.dto.Track
 import com.example.playlist_maker.presentation.player.view_model.PlayerViewModel
+import com.example.playlist_maker.utils.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {

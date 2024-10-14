@@ -10,8 +10,7 @@
         android:id="@+id/libraryToolbar"
         style="@style/Toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        app:navigationIcon="@drawable/ic_arrow_back" />
+        android:layout_height="?actionBarSize" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/libraryTabLayout"

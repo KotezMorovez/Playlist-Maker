@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/yp_blue</item>
         <item name="colorOnPrimary">@color/yp_white</item>
         <item name="colorOnSecondary">@color/yp_white</item>
+        <item name="colorOnSurface">@color/yp_blue</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
 
