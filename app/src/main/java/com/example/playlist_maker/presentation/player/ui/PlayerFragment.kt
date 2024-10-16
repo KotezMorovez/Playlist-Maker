@@ -10,41 +10,40 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlist_maker.R
-import com.example.playlist_maker.databinding.ActivityPlayerBinding
+import com.example.playlist_maker.databinding.FragmentPlayerBinding
 import com.example.playlist_maker.domain.prefs.dto.Track
+import com.example.playlist_maker.presentation.common.BaseFragment
 import com.example.playlist_maker.presentation.player.view_model.PlayerViewModel
 import com.example.playlist_maker.utils.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlayerActivity : AppCompatActivity() {
-    private lateinit var viewBinding: ActivityPlayerBinding
+class PlayerFragment: BaseFragment<FragmentPlayerBinding>() {
     private val viewModel by viewModel <PlayerViewModel>()
+
+    override fun createViewBinding(): FragmentPlayerBinding {
+        return FragmentPlayerBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityPlayerBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
 
         val item: Track? = if (Build.VERSION.SDK_INT < 33) {
-            intent.extras?.getSerializable(TRACK) as Track
+            arguments?.getSerializable(TRACK) as Track
         } else {
-            intent.extras?.getSerializable(TRACK, Track::class.java)
+            arguments?.getSerializable(TRACK, Track::class.java)
         }
 
         if (item != null) {
             viewModel.initialize(item)
         }
-
-        initUi()
-        observeData()
     }
 
-    private fun initUi() {
+    override fun initUi() {
         with(viewBinding) {
-            this@PlayerActivity.setSupportActionBar(playerToolbar)
-            this@PlayerActivity.supportActionBar?.title = EMPTY_STRING
+            (activity as AppCompatActivity).setSupportActionBar(playerToolbar)
+            (activity as AppCompatActivity).supportActionBar?.title = EMPTY_STRING
             playerToolbar.setNavigationOnClickListener {
-                this@PlayerActivity.onBackPressedDispatcher.onBackPressed()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
             }
 
             playerPausePlayButton.setOnClickListener {
@@ -60,15 +59,15 @@ class PlayerActivity : AppCompatActivity() {
             }
 
             trackInfoTrackTimeItem.infoHeaderTextView.text =
-                this@PlayerActivity.getText(R.string.player_track_info_track_time)
+                requireContext().getText(R.string.player_track_info_track_time)
             trackInfoAlbumItem.infoHeaderTextView.text =
-                this@PlayerActivity.getText(R.string.player_track_info_album)
+                requireContext().getText(R.string.player_track_info_album)
             trackInfoReleaseDateItem.infoHeaderTextView.text =
-                this@PlayerActivity.getText(R.string.player_track_info_release_date)
+                requireContext().getText(R.string.player_track_info_release_date)
             trackInfoGenreItem.infoHeaderTextView.text =
-                this@PlayerActivity.getText(R.string.player_track_info_genre)
+                requireContext().getText(R.string.player_track_info_genre)
             trackInfoCountryItem.infoHeaderTextView.text =
-                this@PlayerActivity.getText(R.string.player_track_info_country)
+                requireContext().getText(R.string.player_track_info_country)
         }
     }
 
@@ -102,7 +101,7 @@ class PlayerActivity : AppCompatActivity() {
 
             if (item?.releaseDate == null) {
                 trackInfoReleaseDateItem.infoBodyTextView.text =
-                    this@PlayerActivity.getText(R.string.player_no_data)
+                    requireContext().getText(R.string.player_no_data)
             } else {
                 trackInfoReleaseDateItem.infoBodyTextView.text = item.releaseDate
             }
@@ -132,7 +131,7 @@ class PlayerActivity : AppCompatActivity() {
         )
     }
 
-    private fun observeData() {
+    override fun observeData() {
         viewModel.currentState.observe(this) {
             applyState(it)
         }
@@ -172,9 +171,9 @@ class PlayerActivity : AppCompatActivity() {
         super.onStop()
     }
 
-    override fun onDestroy() {
-        viewModel.resetPlayerScreen(isFinishing)
-        super.onDestroy()
+    override fun onDestroyView() {
+        viewModel.resetPlayerScreen(requireActivity().isFinishing)
+        super.onDestroyView()
     }
 
     enum class Button {

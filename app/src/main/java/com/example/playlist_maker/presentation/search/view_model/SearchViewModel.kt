@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlist_maker.domain.prefs.interactor.HistoryInteractor
 import com.example.playlist_maker.domain.itunes_api.interactor.SearchUseCase
 import com.example.playlist_maker.domain.prefs.dto.Track
+import com.example.playlist_maker.domain.prefs.interactor.HistoryInteractor
 import com.example.playlist_maker.presentation.search.dto.TrackItem
 import com.example.playlist_maker.presentation.search.dto.toUI
 import com.example.playlist_maker.utils.SingleLiveEvent
@@ -43,6 +43,10 @@ class SearchViewModel(
         } else if (state is State.Data && searchResultDomainList.isNotEmpty()) {
             _currentState.value = State.Data(searchResultDomainList.map { it.toUI() })
         }
+    }
+
+    fun clearSearchResult() {
+        searchResultDomainList = listOf()
     }
 
     fun handleItemClick(item: TrackItem, isHistoryList: Boolean) {

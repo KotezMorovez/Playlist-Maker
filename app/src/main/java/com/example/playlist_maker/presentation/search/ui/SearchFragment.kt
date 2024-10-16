@@ -1,6 +1,5 @@
 package com.example.playlist_maker.presentation.search.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,63 +10,92 @@ import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.FragmentSearchBinding
 import com.example.playlist_maker.presentation.common.BaseFragment
-import com.example.playlist_maker.presentation.player.ui.PlayerActivity
 import com.example.playlist_maker.presentation.search.ui.adapter.SearchAdapter
 import com.example.playlist_maker.presentation.search.view_model.SearchViewModel
 import com.example.playlist_maker.utils.ClickThrottler
 import com.example.playlist_maker.utils.Debouncer
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
+// Баг. Окружение: эмулятор Pixel 6, 33 Api, история не пуста
+// Кейс: перейти на экран "Поиск" -> выполнить поиск -> появился результат поиска ->
+// нажать на любой таб BottomNavBar'а -> вернуться на экран "Поиск"
+// ОР: отображается последний результат поиска. Аналогично для состояний когда на экране находятся заглушки.
+// ФР: отображается история.
+
 class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     private val viewModel by viewModel<SearchViewModel>()
-    private val searchAdapter: SearchAdapter
-    private val historyAdapter: SearchAdapter
-    private val textWatcher: TextWatcher
     private val itemClickThrottler = ClickThrottler(CLICK_DELAY)
-    private val searchDebouncer: Debouncer by lazy {
-        Debouncer(SEARCH_DELAY) {
-            with(viewBinding) {
-                val imm = root.context.getSystemService(InputMethodManager::class.java)
-
-                imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
-                viewModel.loadTracks(searchEditText.text.toString())
-
-                viewModel.actualizeState(viewBinding.searchEditText.hasFocus())
-            }
-        }
-    }
-
-    init {
-        searchAdapter = SearchAdapter(onItemClickListener = {
+    private val searchAdapter: SearchAdapter by lazy {
+        SearchAdapter(onItemClickListener = {
             if (itemClickThrottler.clickThrottle()) {
                 viewModel.handleItemClick(it, false)
             }
         })
-        historyAdapter = SearchAdapter(onItemClickListener = {
+    }
+    private val historyAdapter: SearchAdapter by lazy {
+        SearchAdapter(onItemClickListener = {
             if (itemClickThrottler.clickThrottle()) {
                 viewModel.handleItemClick(it, true)
             }
         })
-
-        textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    }
+    private val textWatcher: TextWatcher by lazy {
+        object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 viewBinding.searchFieldClearButton.isInvisible = s.isNullOrEmpty()
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (s != null && s.toString() != viewModel.lastSearchRequest) {
-                    viewModel.setSearchRequest(s.toString())
+                if (s == null) {
+                    return
+                }
+
+                val request = s.toString()
+
+                if (request != viewModel.lastSearchRequest) {
+                    if (request.isNotBlank()) {
+                        viewModel.setSearchRequest(request)
+                        searchDebouncer.updateValue()
+                    } else {
+                        viewModel.setSearchRequest(EMPTY_STRING)
+                        searchAdapter.setItems(listOf())
+                        viewModel.clearSearchResult()
+                    }
+                } else if (request.isNotBlank()) {
                     searchDebouncer.updateValue()
                 }
+            }
+        }
+    }
+
+    private val searchDebouncer: Debouncer by lazy {
+        Debouncer(SEARCH_DELAY) {
+            with(viewBinding) {
+                val imm =
+                    root.context.getSystemService(InputMethodManager::class.java)
+
+                imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+                viewModel.loadTracks(searchEditText.text.toString())
+
+                viewModel.actualizeState(viewBinding.searchEditText.hasFocus())
             }
         }
     }
@@ -95,6 +123,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
             searchEditText.setText(viewModel.lastSearchRequest)
             searchEditText.addTextChangedListener(textWatcher)
+
             searchEditText.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
@@ -103,6 +132,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                 }
                 return@setOnEditorActionListener false
             }
+
             searchEditText.setOnFocusChangeListener { _, hasFocus ->
                 viewModel.actualizeState(hasFocus)
             }
@@ -115,15 +145,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
             }
 
             searchFieldClearButton.setOnClickListener {
-                searchEditText.removeTextChangedListener(textWatcher)
                 searchEditText.setText(EMPTY_STRING)
                 searchEditText.clearFocus()
-                searchEditText.addTextChangedListener(textWatcher)
-
                 viewModel.setSearchRequest(EMPTY_STRING)
-                imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+
                 searchAdapter.setItems(listOf())
-                viewModel.actualizeState(viewBinding.searchEditText.hasFocus())
+
+                imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
             }
 
             searchRecyclerView.adapter = searchAdapter
@@ -136,7 +164,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                 viewModel.clearHistory()
                 viewModel.actualizeState(viewBinding.searchEditText.hasFocus())
             }
-            viewModel.actualizeState(viewBinding.searchEditText.hasFocus())
         }
     }
 
@@ -147,9 +174,11 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
         viewModel.navigationEvent.observe(this) {
             if (it != null) {
-                val intent = Intent(requireActivity(), PlayerActivity::class.java)
-                intent.putExtra(TRACK, it)
-                startActivity(intent)
+                val bundle = bundleOf()
+                bundle.putSerializable(TRACK, it)
+
+                this@SearchFragment.findNavController()
+                    .navigate(R.id.action_searchFragment_to_playerFragment, bundle)
             }
         }
     }

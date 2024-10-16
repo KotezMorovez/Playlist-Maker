@@ -15,6 +15,12 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/bottom_nav_graph"/>
 
+    <View
+        android:id="@+id/mainBNVDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/yp_white"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mainBottomNavigationView"
         android:layout_width="match_parent"
