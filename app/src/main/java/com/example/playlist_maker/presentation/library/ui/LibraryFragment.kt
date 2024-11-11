@@ -10,7 +10,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
-    private lateinit var tabMediator: TabLayoutMediator
+    private var tabMediator: TabLayoutMediator? = null
     private val viewModel by viewModel<LibraryViewModel>()
 
     override fun createViewBinding(): FragmentLibraryBinding {
@@ -22,9 +22,6 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
             (activity as AppCompatActivity).setSupportActionBar(libraryToolbar)
             (activity as AppCompatActivity).supportActionBar?.title =
                 resources.getText(R.string.library_title)
-            libraryToolbar.setNavigationOnClickListener {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
-            }
 
             libraryViewPager.adapter =
                 LibraryViewPagerAdapter(childFragmentManager, lifecycle)
@@ -38,18 +35,14 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
                         requireContext().resources.getText(R.string.library_tab_playlists)
                 }
             }
-            tabMediator.attach()
+            tabMediator?.attach()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        tabMediator.detach()
+        tabMediator?.detach()
     }
 
     override fun observeData() {}
-
-    companion object {
-        fun newInstance() = LibraryFragment()
-    }
 }

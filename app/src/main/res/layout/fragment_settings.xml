@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondary"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/settingsToolbar"
+        style="@style/Toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/darkThemeSwitch"
+        style="@style/Widget.App.Switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:paddingHorizontal="@dimen/padding_4x"
+        android:paddingVertical="20dp"
+        android:text="@string/settings_dark_mode_switch"
+        android:textSize="@dimen/text_body" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/share"
+        style="@style/TextBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/ic_share"
+        android:paddingHorizontal="@dimen/padding_4x"
+        android:paddingVertical="20dp"
+        android:text="@string/settings_share_button"
+        android:textSize="@dimen/text_body" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/support"
+        style="@style/TextBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/ic_support"
+        android:paddingHorizontal="@dimen/padding_4x"
+        android:paddingVertical="20dp"
+        android:text="@string/settings_support_button"
+        android:textSize="@dimen/text_body" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/agreement"
+        style="@style/TextBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/ic_arrow_forward"
+        android:paddingHorizontal="@dimen/padding_4x"
+        android:paddingVertical="20dp"
+        android:text="@string/settings_agreement_button"
+        android:textSize="@dimen/text_body" />
+</LinearLayout>
