@@ -1,7 +1,8 @@
 package com.example.playlist_maker.domain.itunes_api.repository_api
 
 import com.example.playlist_maker.domain.itunes_api.dto.TrackList
+import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
-    suspend fun getTracks(searchRequest: String): Result<TrackList>
+    fun getTracks(searchRequest: String): Flow<TrackList>
 }
