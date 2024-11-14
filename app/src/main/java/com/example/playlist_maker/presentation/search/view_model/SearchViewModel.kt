@@ -10,10 +10,9 @@ import com.example.playlist_maker.domain.prefs.interactor.HistoryInteractor
 import com.example.playlist_maker.presentation.search.dto.TrackItem
 import com.example.playlist_maker.presentation.search.dto.toUI
 import com.example.playlist_maker.utils.SingleLiveEvent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SearchViewModel(
     private val historyInteractor: HistoryInteractor,
@@ -90,28 +89,22 @@ class SearchViewModel(
 
         loadTracksJob = viewModelScope.launch {
             if (text.isNotBlank()) {
-                val result = searchUseCase.getTracks(text)
-
-                if (result.isSuccess) {
-                    val response = result.getOrNull()
-                    if (response?.resultCount != 0) {
-                        searchResultDomainList = response?.tracks ?: listOf()
-
-                        withContext(Dispatchers.Main) {
+                searchUseCase.getTracks(text)
+                    .catch {
+                        _currentState.value = State.Error
+                    }
+                    .collect { trackList ->
+                        if (trackList.resultCount != 0) {
+                            searchResultDomainList = trackList.tracks
                             _currentState.value =
                                 State.Data(searchResultDomainList.map { it.toUI() })
-                        }
 
-                    } else {
-                        withContext(Dispatchers.Main) {
+                        } else {
                             _currentState.value = State.NoData
                         }
                     }
-                } else {
-                    withContext(Dispatchers.Main) {
-                        _currentState.value = State.Error
-                    }
-                }
+            } else {
+                _currentState.value = State.Error
             }
         }
     }

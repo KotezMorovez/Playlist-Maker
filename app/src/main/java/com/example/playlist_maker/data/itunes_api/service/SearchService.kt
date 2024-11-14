@@ -2,33 +2,30 @@ package com.example.playlist_maker.data.itunes_api.service
 
 import android.util.Log
 import com.example.playlist_maker.data.itunes_api.dto.ITunesEntity
-import java.lang.Exception
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 interface SearchService {
-    suspend fun getSearch (searchRequest: String): Result<ITunesEntity>
+    fun getSearch(searchRequest: String): Flow<ITunesEntity>
 }
 
 class SearchServiceImpl(
     private val iTunesApi: ITunesSearchAPI
-): SearchService {
-    override suspend fun getSearch (searchRequest: String): Result<ITunesEntity> {
-        try {
-            val response = iTunesApi.getSearch(text = searchRequest)
+) : SearchService {
+    override fun getSearch(searchRequest: String): Flow<ITunesEntity> = flow {
+        val response = iTunesApi.getSearch(text = searchRequest)
 
-            if (!response.isSuccessful) {
-                Log.e (TAG, response.code().toString())
-                return Result.failure(Exception(response.errorBody().toString()))
-            }
+        if (!response.isSuccessful) {
+            Log.e (TAG, response.code().toString())
+            throw Exception(response.errorBody().toString())
+        }
 
-            val tracks = response.body()
+        val tracks = response.body()
 
-            return if (tracks != null) {
-                Result.success(tracks)
-            } else {
-                Result.failure(Exception("Неизвестная ошибка"))
-            }
-        } catch (t: Throwable) {
-            return Result.failure(t)
+         if (tracks != null) {
+             emit(tracks)
+        } else {
+            throw Exception("Неизвестная ошибка")
         }
     }
 

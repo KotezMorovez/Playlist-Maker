@@ -1,20 +1,20 @@
 package com.example.playlist_maker.utils
 
-import android.os.Handler
-import android.os.Looper
-import kotlin.math.max
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class Timer(
     private val delay: Long,
-    private val interval: Long,
+    private val totalTime: Long,
+    private val coroutineScope: CoroutineScope,
     private val lambda: (Long) -> Unit
 ) {
-    private val handler: Handler = Handler(Looper.getMainLooper())
-    private var startTime = 0L
-    private var timeLeft = interval
-    private var remainTime = 0L
-    private var runnable: Runnable? = null
-
+    private var startTimestamp = 0L
+    private var lastPauseTimestamp = 0L
+    private var job: Job? = null
+    private var remainTime = totalTime
     var state: State = State.IDLE
         private set
 
@@ -27,56 +27,47 @@ class Timer(
     }
 
     fun reset() {
-        if (runnable != null) {
-            handler.removeCallbacks(runnable!!)
-        }
         state = State.IDLE
+        job?.cancel()
     }
 
     fun pause() {
-        if (runnable != null) {
-            handler.removeCallbacks(runnable!!)
-        }
-
-        timeLeft = remainTime - (System.currentTimeMillis() - startTime)
-
         state = State.PAUSED
+        lastPauseTimestamp = System.currentTimeMillis()
+        job?.cancel()
     }
 
     private fun start() {
-        startTime = System.currentTimeMillis()
-        timeLeft = interval
-
-        runnable = updateTimer(interval)
-        handler.post(runnable!!)
-
         state = State.RUNNING
+        remainTime = totalTime
+        startTimestamp = System.currentTimeMillis()
+        lambda.invoke(remainTime)
+        startJob()
     }
 
     private fun resume() {
-        startTime = System.currentTimeMillis()
-
-        runnable = updateTimer(timeLeft)
-        handler.postDelayed(runnable!!, timeLeft % 1000)
-
         state = State.RUNNING
+        startJob()
     }
 
-    private fun updateTimer(remainTime: Long): Runnable {
-        this.remainTime = remainTime
-
-        return object : Runnable {
-            override fun run() {
-                val elapsedTime = System.currentTimeMillis() - startTime
-                timeLeft = remainTime - elapsedTime
-                val currentTimeLeft = timeLeft
-
-                if (currentTimeLeft > 0) {
-                    handler.postDelayed(this, delay)
+    private fun startJob() {
+        job = coroutineScope.launch {
+            while (state == State.RUNNING) {
+                val currentDelay = if ((lastPauseTimestamp - startTimestamp) % delay > 0) {
+                    val newDelay = delay - (lastPauseTimestamp - startTimestamp) % delay
+                    lastPauseTimestamp = startTimestamp
+                    newDelay
+                } else {
+                    delay
+                }
+                if (remainTime > 0) {
+                    delay(currentDelay)
+                    remainTime -= currentDelay
                 } else {
                     reset()
                 }
-                lambda.invoke(max(currentTimeLeft, 0))
+
+                lambda.invoke(remainTime)
             }
         }
     }
