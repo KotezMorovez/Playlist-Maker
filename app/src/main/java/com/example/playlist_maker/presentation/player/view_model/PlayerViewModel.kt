@@ -100,7 +100,7 @@ class PlayerViewModel(
     }
 
     private fun initTimer() {
-        timer = Timer(TIMER_DELAY, PREVIEW_TIME) { timeLeft ->
+        timer = Timer(TIMER_DELAY, PREVIEW_TIME, viewModelScope) { timeLeft ->
             val timeLeftSeconds = Math.round(timeLeft / 1000f).toLong()
             _currentState.value = _currentState.value?.copy(
                 timeLeft = String.format("%02d:%02d", timeLeftSeconds / 60, timeLeftSeconds)

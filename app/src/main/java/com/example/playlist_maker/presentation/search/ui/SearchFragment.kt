@@ -14,39 +14,28 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.FragmentSearchBinding
 import com.example.playlist_maker.presentation.common.BaseFragment
+import com.example.playlist_maker.presentation.search.dto.TrackItem
 import com.example.playlist_maker.presentation.search.ui.adapter.SearchAdapter
 import com.example.playlist_maker.presentation.search.view_model.SearchViewModel
-import com.example.playlist_maker.utils.ClickThrottler
-import com.example.playlist_maker.utils.Debouncer
+import com.example.playlist_maker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
-
-// Баг. Окружение: эмулятор Pixel 6, 33 Api, история не пуста
-// Кейс: перейти на экран "Поиск" -> выполнить поиск -> появился результат поиска ->
-// нажать на любой таб BottomNavBar'а -> вернуться на экран "Поиск"
-// ОР: отображается последний результат поиска. Аналогично для состояний когда на экране находятся заглушки.
-// ФР: отображается история.
 
 class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     private val viewModel by viewModel<SearchViewModel>()
-    private val itemClickThrottler = ClickThrottler(CLICK_DELAY)
     private val searchAdapter: SearchAdapter by lazy {
         SearchAdapter(onItemClickListener = {
-            if (itemClickThrottler.clickThrottle()) {
-                viewModel.handleItemClick(it, false)
-            }
+            itemClickThrottler.invoke(it to false)
         })
     }
     private val historyAdapter: SearchAdapter by lazy {
         SearchAdapter(onItemClickListener = {
-            if (itemClickThrottler.clickThrottle()) {
-                viewModel.handleItemClick(it, true)
-            }
+            itemClickThrottler.invoke(it to true)
         })
     }
     private val textWatcher: TextWatcher by lazy {
@@ -73,32 +62,20 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                 if (request != viewModel.lastSearchRequest) {
                     if (request.isNotBlank()) {
                         viewModel.setSearchRequest(request)
-                        searchDebouncer.updateValue()
+                        searchDebounce.invoke(Unit)
                     } else {
                         viewModel.setSearchRequest(EMPTY_STRING)
                         searchAdapter.setItems(listOf())
                         viewModel.clearSearchResult()
                     }
                 } else if (request.isNotBlank()) {
-                    searchDebouncer.updateValue()
+                    searchDebounce.invoke(Unit)
                 }
             }
         }
     }
-
-    private val searchDebouncer: Debouncer by lazy {
-        Debouncer(SEARCH_DELAY) {
-            with(viewBinding) {
-                val imm =
-                    root.context.getSystemService(InputMethodManager::class.java)
-
-                imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
-                viewModel.loadTracks(searchEditText.text.toString())
-
-                viewModel.actualizeState(viewBinding.searchEditText.hasFocus())
-            }
-        }
-    }
+    private lateinit var searchDebounce: (Unit) -> Unit
+    private lateinit var itemClickThrottler: (Pair<TrackItem, Boolean>) -> Unit
 
     override fun createViewBinding(): FragmentSearchBinding {
         return FragmentSearchBinding.inflate(layoutInflater)
@@ -111,6 +88,33 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     ): View? {
         viewModel.init()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        searchDebounce = debounce(
+            delay = SEARCH_DELAY,
+            coroutineScope = viewLifecycleOwner.lifecycleScope,
+            isDebouncer = true,
+        ) {
+            with(viewBinding) {
+                val imm =
+                    root.context.getSystemService(InputMethodManager::class.java)
+
+                imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+                viewModel.loadTracks(searchEditText.text.toString())
+
+                viewModel.actualizeState(viewBinding.searchEditText.hasFocus())
+            }
+        }
+        itemClickThrottler = debounce(
+            delay = CLICK_DELAY,
+            coroutineScope = viewLifecycleOwner.lifecycleScope,
+            isDebouncer = false
+        ) { (item, isHistoryList) ->
+            viewModel.handleItemClick(item, isHistoryList)
+        }
     }
 
     override fun initUi() {
