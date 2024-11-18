@@ -17,13 +17,14 @@ class PlayerViewModel(
     private val playerInteractor: PlayerInteractor
 ) : ViewModel() {
     private var timer: Timer? = null
-
+    private var trackDomain: Track? = null
     private var _currentState: MutableLiveData<State> = MutableLiveData(State.default())
     val currentState: LiveData<State>
         get() = _currentState
 
     fun initialize(item: Track) {
-        _currentState.value = _currentState.value?.copy(track = item.toPlayerUI())
+        trackDomain = item
+        _currentState.value = _currentState.value?.copy(track = trackDomain?.toPlayerUI())
 
         if (!checkPlayer()) {
             val uri = _currentState.value?.track?.previewUrl
@@ -34,6 +35,13 @@ class PlayerViewModel(
 
         if (timer == null) {
             initTimer()
+        }
+
+        if (trackDomain != null) {
+            viewModelScope.launch {
+                val isFavourite = playerInteractor.isTrackInFavourite(trackDomain!!.trackId)
+                _currentState.value = _currentState.value?.copy(isFavourite = isFavourite)
+            }
         }
     }
 
@@ -64,8 +72,11 @@ class PlayerViewModel(
 
     fun toggleFavourite() {
         val state = _currentState.value ?: return
-        val isFavourite = !state.isFavourite
-        _currentState.value = _currentState.value?.copy(isFavourite = isFavourite)
+        if (trackDomain != null) {
+            updateDatabase(state)
+            val isFavourite = !state.isFavourite
+            _currentState.value = _currentState.value?.copy(isFavourite = isFavourite)
+        }
     }
 
     fun stopPlayerScreen() {
@@ -73,6 +84,16 @@ class PlayerViewModel(
             _currentState.value = _currentState.value?.copy(isPlay = false)
             timer?.pause()
             playerInteractor.applyState(PlayerStateUI.PAUSED.toDomain())
+        }
+    }
+
+    private fun updateDatabase(state: State) {
+        viewModelScope.launch {
+            if (state.isFavourite) {
+                playerInteractor.deleteTrackFromFavourite(trackDomain!!)
+            } else {
+                playerInteractor.addTrackToFavourite(trackDomain!!)
+            }
         }
     }
 
