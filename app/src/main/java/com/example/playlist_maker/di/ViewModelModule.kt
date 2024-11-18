@@ -16,7 +16,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        LibraryFavTracksPageViewModel()
+        LibraryFavTracksPageViewModel(get())
     }
 
     viewModel {
