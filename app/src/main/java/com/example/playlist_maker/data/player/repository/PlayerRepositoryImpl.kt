@@ -1,6 +1,6 @@
 package com.example.playlist_maker.data.player.repository
 
-import com.example.playlist_maker.data.database.AppDatabase
+import com.example.playlist_maker.data.database.TrackDao
 import com.example.playlist_maker.data.database.toDatabase
 import com.example.playlist_maker.data.player.dto.toEntity
 import com.example.playlist_maker.data.player.service.PlayerService
@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 
 class PlayerRepositoryImpl(
     private val audioPlayerService: PlayerService,
-    private val database: AppDatabase
+    private val database: TrackDao
 ) : PlayerRepository {
     override fun preparePlayer(previewUrl: String) {
         audioPlayerService.preparePlayer(previewUrl)
@@ -28,20 +28,20 @@ class PlayerRepositoryImpl(
 
     override suspend fun addTrackToFavourite(track: Track) {
         withContext(Dispatchers.IO) {
-            database.trackDao().addTrack(track.toDatabase())
+            database.addTrack(track.toDatabase())
         }
     }
 
     override suspend fun deleteTrackFromFavourite(track: Track) {
         withContext(Dispatchers.IO) {
-            database.trackDao().deleteTrack(track.toDatabase())
+            database.deleteTrack(track.toDatabase())
         }
     }
 
     override suspend fun isTrackInFavourite(id: String): Boolean {
         var result = false
         withContext(Dispatchers.IO) {
-            val findTrackList = database.trackDao().findTrackInTable(id)
+            val findTrackList = database.findTrackInTable(id)
             if (findTrackList.isNotEmpty()) {
                 result = true
             }
