@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.playlist_maker.domain.prefs.dto.Track
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,5 +19,5 @@ interface TrackDao {
     fun getAllTracks(): Flow<List<TrackDbEntity>>
 
     @Query("SELECT * FROM favourite_tracks_table WHERE trackId = :id")
-    fun findTrackInTable(id: String): List<Track>
+    fun findTrackInTable(id: String): TrackDbEntity?
 }

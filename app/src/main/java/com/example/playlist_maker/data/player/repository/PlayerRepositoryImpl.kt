@@ -39,13 +39,9 @@ class PlayerRepositoryImpl(
     }
 
     override suspend fun isTrackInFavourite(id: String): Boolean {
-        var result = false
-        withContext(Dispatchers.IO) {
-            val findTrackList = database.findTrackInTable(id)
-            if (findTrackList.isNotEmpty()) {
-                result = true
-            }
+        return withContext(Dispatchers.IO) {
+            val foundTrack = database.findTrackInTable(id)
+            foundTrack != null
         }
-        return result
     }
 }
