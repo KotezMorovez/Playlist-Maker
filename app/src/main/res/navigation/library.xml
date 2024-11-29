@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_libraryFavTracksPageFragment_to_playerFragment"
             app:destination="@id/playerFragment" />
+        <action
+            android:id="@+id/action_libraryPlaylistsFragment_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistFragment"/>
     </fragment>
 
     <fragment
@@ -21,5 +24,11 @@
         <argument
             android:name="track"
             app:argType="com.example.playlist_maker.domain.prefs.dto.Track" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createPlaylistFragment"
+        android:name="com.example.playlist_maker.presentation.playlist_create.ui.CreatePlaylistFragment"
+        tools:layout="@layout/fragment_library">
     </fragment>
 </navigation>

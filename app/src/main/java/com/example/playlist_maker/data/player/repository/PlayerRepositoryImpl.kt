@@ -1,7 +1,7 @@
 package com.example.playlist_maker.data.player.repository
 
-import com.example.playlist_maker.data.database.TrackDao
-import com.example.playlist_maker.data.database.toDatabase
+import com.example.playlist_maker.data.database.track.TrackDao
+import com.example.playlist_maker.data.database.track.toDatabase
 import com.example.playlist_maker.data.player.dto.toEntity
 import com.example.playlist_maker.data.player.service.PlayerService
 import com.example.playlist_maker.domain.player.dto.PlayerState

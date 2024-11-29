@@ -1,5 +1,7 @@
 package com.example.playlist_maker.presentation.library.ui
 
+import androidx.navigation.fragment.findNavController
+import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.FragmentLibraryPlaylistsPageBinding
 import com.example.playlist_maker.presentation.common.BaseFragment
 import com.example.playlist_maker.presentation.library.view_model.LibraryPlaylistsPageViewModel
@@ -14,7 +16,10 @@ class LibraryPlaylistsPageFragment: BaseFragment<FragmentLibraryPlaylistsPageBin
 
     override fun initUi() {
         with(viewBinding) {
-            newPlaylistButton.setOnClickListener { /* TODO */ }
+            newPlaylistButton.setOnClickListener {
+                this@LibraryPlaylistsPageFragment.findNavController()
+                    .navigate(R.id.action_libraryPlaylistsFragment_to_createPlaylistFragment)
+            }
         }
     }
 

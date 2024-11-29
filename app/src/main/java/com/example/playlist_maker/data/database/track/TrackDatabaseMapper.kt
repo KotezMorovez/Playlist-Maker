@@ -1,4 +1,4 @@
-package com.example.playlist_maker.data.database
+package com.example.playlist_maker.data.database.track
 
 import com.example.playlist_maker.domain.prefs.dto.Track
 

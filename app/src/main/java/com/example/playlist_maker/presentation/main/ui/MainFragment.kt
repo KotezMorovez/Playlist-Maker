@@ -8,7 +8,9 @@ import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.FragmentMainBinding
 import com.example.playlist_maker.presentation.common.BaseFragment
 
-class MainFragment: BaseFragment<FragmentMainBinding>() {
+class MainFragment : BaseFragment<FragmentMainBinding>() {
+    private val destinationsIdList = listOf(R.id.playerFragment, R.id.createPlaylistFragment)
+
     override fun createViewBinding(): FragmentMainBinding {
         return FragmentMainBinding.inflate(layoutInflater)
     }
@@ -19,7 +21,7 @@ class MainFragment: BaseFragment<FragmentMainBinding>() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             with(viewBinding) {
-                if (destination.id == R.id.playerFragment) {
+                if (destinationsIdList.contains(destination.id)) {
                     mainBottomNavigationView.isGone = true
                     mainBNVDivider.isGone = true
                 } else {

@@ -109,11 +109,13 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-
     <style name="PlaylistEditText" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
         <item name="android:textColor">@color/yp_black</item>
-        <item name="android:textColorHint">@color/yp_black</item>
+        <item name="android:textColorHint">@color/new_playlist_hint_color</item>
+        <item name="android:textSelectHandle">@color/yp_blue</item>
+        <item name="android:textSelectHandleLeft">@color/yp_blue</item>
+        <item name="android:textSelectHandleRight">@color/yp_blue</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:textSize">16sp</item>
     </style>
@@ -134,6 +136,7 @@
     </style>
 
     <style name="SmallButton2">
+        <item name="backgroundTint">@null</item>
         <item name="android:background">@drawable/selector_button</item>
         <item name="android:letterSpacing">0</item>
         <item name="android:textAllCaps">false</item>

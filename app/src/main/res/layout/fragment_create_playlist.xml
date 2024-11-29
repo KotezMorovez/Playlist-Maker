@@ -47,6 +47,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        app:cursorColor="@color/yp_blue"
         app:layout_constraintEnd_toStartOf="@+id/rightGuideLine"
         app:layout_constraintStart_toStartOf="@+id/leftGuideLine"
         app:layout_constraintTop_toBottomOf="@+id/newPlaylistImage">
@@ -65,19 +66,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="@string/new_playlist_description_hint"
+        app:cursorColor="@color/yp_blue"
         app:layout_constraintEnd_toStartOf="@+id/rightGuideLine"
         app:layout_constraintStart_toStartOf="@+id/leftGuideLine"
         app:layout_constraintTop_toBottomOf="@+id/newPlaylistNameContainer">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/newPlaylistDescriptionEditText"
+            style="@style/PlaylistEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="@string/new_playlist_description_hint"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/newPlaylistButton"
         style="@style/SmallButton2"
         android:layout_width="0dp"
         android:layout_height="44dp"
