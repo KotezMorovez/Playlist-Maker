@@ -1,5 +1,6 @@
 package com.example.playlist_maker.data.database.playlist
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -7,8 +8,17 @@ import androidx.room.PrimaryKey
 data class PlaylistDbEntity(
     @PrimaryKey
     val id: String,
+    @ColumnInfo(name = "image_uri")
     val imageUri: String,
     val name: String,
-    val description: String,
-    val tracksIdList: List<String>
+    val description: String
+)
+
+@Entity(tableName = "track_list")
+data class TrackListDbEntity(
+    @ColumnInfo(name = "playlist_id")
+    val playlistId: String,
+    @ColumnInfo(name = "track_id")
+    val trackId: String,
+    val timestamp: Long
 )

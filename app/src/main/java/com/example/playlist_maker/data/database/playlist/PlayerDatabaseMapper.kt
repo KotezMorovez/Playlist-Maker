@@ -1,13 +1,12 @@
 package com.example.playlist_maker.data.database.playlist
 
-import com.example.playlist_maker.domain.playlist.dto.Playlist
+import com.example.playlist_maker.domain.library.dto.Playlist
 
-fun Playlist.toDatabase(): PlaylistDbEntity {
+fun Playlist.toDbEntity(): PlaylistDbEntity {
     return PlaylistDbEntity(
         id = this.id,
         name = this.name,
-        imageUri = this.image,
-        description = this.description,
-        tracksIdList = this.tracks // List<String>
+        imageUri = this.imageUri,
+        description = this.description
     )
 }
