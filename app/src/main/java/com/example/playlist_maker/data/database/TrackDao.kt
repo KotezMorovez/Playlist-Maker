@@ -15,9 +15,9 @@ interface TrackDao {
     @Delete(entity = TrackDbEntity::class)
     fun deleteTrack(track: TrackDbEntity)
 
-    @Query("SELECT * FROM favourite_tracks_table")
+    @Query("SELECT * FROM favourite_tracks")
     fun getAllTracks(): Flow<List<TrackDbEntity>>
 
-    @Query("SELECT * FROM favourite_tracks_table WHERE trackId = :id")
+    @Query("SELECT * FROM favourite_tracks WHERE track_id = :id")
     fun findTrackInTable(id: String): TrackDbEntity?
 }
