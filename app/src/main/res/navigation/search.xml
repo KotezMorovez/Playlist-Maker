@@ -21,5 +21,14 @@
         <argument
             android:name="track"
             app:argType="com.example.playlist_maker.domain.prefs.dto.Track" />
+        <action
+            android:id="@+id/action_playerFragment_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/createPlaylistFragment"
+        android:name="com.example.playlist_maker.presentation.playlist_create.ui.CreatePlaylistFragment"
+        tools:layout="@layout/fragment_create_playlist">
     </fragment>
 </navigation>

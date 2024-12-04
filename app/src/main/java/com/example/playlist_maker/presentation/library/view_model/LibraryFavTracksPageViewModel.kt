@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlist_maker.domain.library.interactor.LibraryInteractor
 import com.example.playlist_maker.domain.prefs.dto.Track
 import com.example.playlist_maker.presentation.library.dto.TrackLibraryItem
-import com.example.playlist_maker.presentation.library.dto.toLibraryUI
+import com.example.playlist_maker.presentation.library.dto.toTrackLibraryUI
 import com.example.playlist_maker.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
@@ -30,7 +30,7 @@ class LibraryFavTracksPageViewModel(
                 tracksDomainList = it
 
                 if (tracksDomainList.isNotEmpty()) {
-                    _currentState.value = State.Data(tracksDomainList.map { it.toLibraryUI() })
+                    _currentState.value = State.Data(tracksDomainList.map { it.toTrackLibraryUI() })
                 } else {
                     _currentState.value = State.NoData
                 }

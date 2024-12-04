@@ -14,11 +14,13 @@ data class PlaylistDbEntity(
     val description: String
 )
 
-@Entity(tableName = "track_list")
-data class TrackListDbEntity(
-    @ColumnInfo(name = "playlist_id")
-    val playlistId: String,
-    @ColumnInfo(name = "track_id")
-    val trackId: String,
-    val timestamp: Long
-)
+//@Entity(tableName = "track_list")
+//data class TrackListDbEntity(
+//    @PrimaryKey(autoGenerate = true)
+//    val id: Int,
+//    @ColumnInfo(name = "playlist_id")
+//    val playlistId: String,
+//    @ColumnInfo(name = "track_id")
+//    val trackId: String,
+//    val timestamp: Long
+//)

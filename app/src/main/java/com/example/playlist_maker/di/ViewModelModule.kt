@@ -21,7 +21,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        LibraryPlaylistsPageViewModel()
+        LibraryPlaylistsPageViewModel(get())
     }
 
     viewModel {
@@ -41,6 +41,6 @@ val viewModelModule = module {
     }
 
     viewModel {
-        CreatePlaylistViewModel()
+        CreatePlaylistViewModel(get())
     }
 }

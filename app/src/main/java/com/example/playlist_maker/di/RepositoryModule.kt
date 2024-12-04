@@ -12,11 +12,11 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
     factory<LibraryRepository> {
-        LibraryRepositoryImpl(get())
+        LibraryRepositoryImpl(get(), get(), get())
     }
 
     factory<PlayerRepository> {
-        PlayerRepositoryImpl(get(), get())
+        PlayerRepositoryImpl(get(), get(), get())
     }
 
     factory<PrefsRepository> {

@@ -10,3 +10,15 @@ fun Playlist.toDbEntity(): PlaylistDbEntity {
         description = this.description
     )
 }
+
+fun playlistDbEntityToDomain(entity: PlaylistDbEntity): Playlist {
+    val count = /*playlistDao.getTracksCountById(entity.id)*/ 0
+
+    return Playlist(
+        id = entity.id,
+        name = entity.name,
+        imageUri = entity.imageUri,
+        description = entity.description,
+        tracksCount = count
+    )
+}

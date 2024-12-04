@@ -45,4 +45,11 @@
     <string name="new_playlist_name_hint">Название*</string>
     <string name="new_playlist_button">Создать</string>
     <string name="new_playlist_description_hint">Описание</string>
+
+    <plurals name="tracks">
+        <item quantity="one">трек</item>
+        <item quantity="two">трека</item>
+        <item quantity="few">трека</item>
+        <item quantity="other">треков</item>
+    </plurals>
 </resources>

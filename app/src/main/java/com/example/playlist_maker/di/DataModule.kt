@@ -3,10 +3,13 @@ package com.example.playlist_maker.di
 import android.content.Context
 import androidx.room.Room
 import com.example.playlist_maker.data.database.AppDatabase
+import com.example.playlist_maker.data.database.playlist.PlaylistDao
 import com.example.playlist_maker.data.database.track.TrackDao
 import com.example.playlist_maker.data.itunes_api.service.ITunesSearchAPI
 import com.example.playlist_maker.data.itunes_api.service.SearchService
 import com.example.playlist_maker.data.itunes_api.service.SearchServiceImpl
+import com.example.playlist_maker.data.library.StorageService
+import com.example.playlist_maker.data.library.StorageServiceImpl
 import com.example.playlist_maker.data.player.service.PlayerService
 import com.example.playlist_maker.data.player.service.PlayerServiceImpl
 import com.example.playlist_maker.data.prefs.service.PrefsStorage
@@ -46,6 +49,10 @@ val dataModule = module {
         SearchServiceImpl(get())
     }
 
+    single<StorageService> {
+        StorageServiceImpl(androidContext())
+    }
+
     single<AppDatabase> {
         Room.databaseBuilder(
             androidContext(),
@@ -57,6 +64,11 @@ val dataModule = module {
     single<TrackDao> {
         val db: AppDatabase = get()
         db.trackDao()
+    }
+
+    single<PlaylistDao> {
+        val db: AppDatabase = get()
+        db.playlistDao()
     }
 }
 

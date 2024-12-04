@@ -26,6 +26,11 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="TextHeader2">
+        <item name="android:textColor">@color/yp_white</item>
+        <item name="android:textSize">19sp</item>
+    </style>
+
     <style name="TextBody">
         <item name="android:textColor">@color/yp_white</item>
         <item name="android:textSize">@dimen/text_body</item>
@@ -133,5 +138,11 @@
         <item name="boxCornerRadiusTopStart">4dp</item>
         <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox
         </item>
+    </style>
+
+    <style name="AlertTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:background">@color/yp_black</item>
+        <item name="android:textColorPrimary">@color/yp_white</item>
+        <item name="android:colorAccent">@color/yp_blue</item>
     </style>
 </resources>
