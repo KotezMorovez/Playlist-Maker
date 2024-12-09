@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "favourite_tracks")
+@Entity(tableName = "tracks")
 data class TrackDbEntity(
     @PrimaryKey
     @ColumnInfo(name = "track_id")
@@ -25,5 +25,9 @@ data class TrackDbEntity(
     @ColumnInfo(name = "artwork_url")
     val artworkUrl100: String?,
     @ColumnInfo(name = "preview_url")
-    val previewUrl: String?
+    val previewUrl: String?,
+    @ColumnInfo(name = "is_favourite")
+    val isFavourite: Boolean,
+    @ColumnInfo(name = "timestamp_favourite")
+    val timestampFavourite: Long
 )

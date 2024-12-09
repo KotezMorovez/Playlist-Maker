@@ -52,7 +52,14 @@ class LibraryPlaylistsPageFragment : BaseFragment<FragmentLibraryPlaylistsPageBi
             }
 
             val spacingInPixels = resources.getDimensionPixelSize(R.dimen.grid_layout_margin)
-            libraryPlaylistsRecyclerView.addItemDecoration(GridSpacingItemDecoration(2, spacingInPixels, true, 0))
+            libraryPlaylistsRecyclerView.addItemDecoration(
+                GridSpacingItemDecoration(
+                    2,
+                    spacingInPixels,
+                    true,
+                    0
+                )
+            )
 
             libraryPlaylistsRecyclerView.adapter = adapter
             libraryPlaylistsRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)

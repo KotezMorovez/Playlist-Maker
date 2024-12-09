@@ -13,7 +13,9 @@ fun Track.toDatabase(): TrackDbEntity {
         primaryGenreName = this.primaryGenreName,
         country = this.country,
         artworkUrl100 = this.artworkUrl100,
-        previewUrl = this.previewUrl
+        previewUrl = this.previewUrl,
+        isFavourite = this.isFavourite,
+        timestampFavourite = this.timestampFavourite
     )
 }
 
@@ -28,6 +30,8 @@ fun TrackDbEntity.toDomain(): Track {
         primaryGenreName = this.primaryGenreName,
         country = this.country,
         artworkUrl100 = this.artworkUrl100,
-        previewUrl = this.previewUrl ?: ""
+        previewUrl = this.previewUrl ?: "",
+        isFavourite = this.isFavourite,
+        timestampFavourite = this.timestampFavourite
     )
 }

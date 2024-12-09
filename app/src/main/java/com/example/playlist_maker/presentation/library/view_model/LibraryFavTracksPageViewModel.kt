@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlist_maker.domain.library.interactor.LibraryInteractor
+import com.example.playlist_maker.domain.library.interactor.TrackInteractor
 import com.example.playlist_maker.domain.prefs.dto.Track
 import com.example.playlist_maker.presentation.library.dto.TrackLibraryItem
 import com.example.playlist_maker.presentation.library.dto.toTrackLibraryUI
@@ -12,7 +12,7 @@ import com.example.playlist_maker.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 class LibraryFavTracksPageViewModel(
-    private val libraryInteractor: LibraryInteractor
+    private val trackInteractor: TrackInteractor
 ) : ViewModel() {
     private var tracksDomainList: List<Track> = listOf()
 
@@ -26,7 +26,7 @@ class LibraryFavTracksPageViewModel(
 
     init {
         viewModelScope.launch {
-            libraryInteractor.getTracks().collect {
+            trackInteractor.getTracks().collect {
                 tracksDomainList = it
 
                 if (tracksDomainList.isNotEmpty()) {

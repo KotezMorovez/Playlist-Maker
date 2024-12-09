@@ -1,4 +1,4 @@
-package com.example.playlist_maker.data.library
+package com.example.playlist_maker.data.storage.service
 
 import android.content.ContentResolver
 import android.content.Context
@@ -12,11 +12,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 
-interface StorageService {
+interface ImageStorage {
     fun addImageToStorage(uri: Uri): Uri?
 }
 
-class StorageServiceImpl(private val context: Context) : StorageService {
+class ImageStorageImpl(private val context: Context) : ImageStorage {
     override fun addImageToStorage(uri: Uri): Uri? {
         val bitmap = uriToBitmap(uri) ?: return null
 

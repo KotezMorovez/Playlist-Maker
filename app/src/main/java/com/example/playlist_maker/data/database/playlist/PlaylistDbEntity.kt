@@ -11,7 +11,8 @@ data class PlaylistDbEntity(
     @ColumnInfo(name = "image_uri")
     val imageUri: String,
     val name: String,
-    val description: String
+    val description: String,
+    val timestamp: Long
 )
 
 //@Entity(tableName = "track_list")

@@ -1,5 +1,6 @@
 package com.example.playlist_maker.presentation.player.dto
 
+import com.example.playlist_maker.domain.library.dto.Playlist
 import com.example.playlist_maker.domain.player.dto.PlayerState
 import com.example.playlist_maker.domain.prefs.dto.Track
 import java.text.SimpleDateFormat
@@ -58,5 +59,14 @@ fun Track.toPlayerUI(): TrackUI {
         country = this.country,
         artworkUrl100 = this.artworkUrl100,
         previewUrl = this.previewUrl
+    )
+}
+
+fun Playlist.toPlaylistPlayerUI(): PlaylistPlayerItem {
+    return PlaylistPlayerItem(
+        id = this.id,
+        coverImageURI = this.imageUri,
+        name = this.name,
+        tracksCount = this.tracksCount
     )
 }

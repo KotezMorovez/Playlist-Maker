@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlist_maker.domain.library.dto.Playlist
-import com.example.playlist_maker.domain.library.interactor.LibraryInteractor
+import com.example.playlist_maker.domain.library.interactor.PlaylistInteractor
 import com.example.playlist_maker.presentation.library.dto.PlaylistLibraryItem
 import com.example.playlist_maker.presentation.library.dto.toPlaylistLibraryUI
 import com.example.playlist_maker.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 class LibraryPlaylistsPageViewModel(
-    private val libraryInteractor: LibraryInteractor
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
     private var playlistDomainList: List<Playlist> = listOf()
 
@@ -27,7 +27,7 @@ class LibraryPlaylistsPageViewModel(
 
     init {
         viewModelScope.launch {
-            libraryInteractor.getPlaylists().collect {
+            playlistInteractor.getPlaylists().collect {
                 playlistDomainList = it
 
                 if (playlistDomainList.isNotEmpty()) {
@@ -39,9 +39,7 @@ class LibraryPlaylistsPageViewModel(
         }
     }
 
-    fun handleItemClick(item: PlaylistLibraryItem) {
-
-    }
+    fun handleItemClick(item: PlaylistLibraryItem) { /*TODO*/ }
 
     sealed class State {
         class Data(val list: List<PlaylistLibraryItem>) : State()

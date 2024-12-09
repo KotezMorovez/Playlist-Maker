@@ -9,7 +9,7 @@ import com.example.playlist_maker.databinding.FragmentMainBinding
 import com.example.playlist_maker.presentation.common.BaseFragment
 
 class MainFragment : BaseFragment<FragmentMainBinding>() {
-    private val destinationsIdList = listOf(R.id.playerFragment, R.id.createPlaylistFragment)
+    private val destinationsIdList = listOf(R.id.playerFragment, R.id.createPlaylistFragment, R.id.createPlaylistPlayerFragment)
 
     override fun createViewBinding(): FragmentMainBinding {
         return FragmentMainBinding.inflate(layoutInflater)

@@ -76,7 +76,7 @@
             style="@style/PlaylistEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/new_playlist_description_hint"/>
+            android:hint="@string/new_playlist_description_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

@@ -26,12 +26,12 @@ class CreatePlaylistFragment : BaseFragment<FragmentCreatePlaylistBinding>() {
     private lateinit var galleryHandler: GalleryHandler
     private val alertDialog by lazy {
         MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlert)
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNegativeButton("Отмена") { dialog, which ->
+            .setTitle(resources.getText(R.string.alert_dialog_title))
+            .setMessage(resources.getText(R.string.alert_dialog_body))
+            .setNegativeButton(resources.getText(R.string.alert_dialog_negative_button)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton("Завершить") { dialog, which ->
+            .setPositiveButton(resources.getText(R.string.alert_dialog_positive_button)) { _, _ ->
                 this@CreatePlaylistFragment.findNavController().popBackStack()
             }
     }
@@ -60,7 +60,7 @@ class CreatePlaylistFragment : BaseFragment<FragmentCreatePlaylistBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                alertDialog.show()
+                handleWarningDialog()
             }
         }
 
@@ -79,14 +79,7 @@ class CreatePlaylistFragment : BaseFragment<FragmentCreatePlaylistBinding>() {
             (activity as AppCompatActivity).supportActionBar?.title =
                 resources.getText(R.string.new_playlist_title)
             newPlaylistToolbar.setNavigationOnClickListener {
-                if (
-                    !newPlaylistNameEditText.text.isNullOrBlank() ||
-                    viewModel.currentPlaylistCover.value != null
-                ) {
-                    alertDialog.show()
-                } else {
-                    this@CreatePlaylistFragment.findNavController().popBackStack()
-                }
+                handleWarningDialog()
             }
 
             newPlaylistImage.setOnClickListener { galleryHandler.selectImage() }
@@ -113,7 +106,10 @@ class CreatePlaylistFragment : BaseFragment<FragmentCreatePlaylistBinding>() {
             val snackBar = Snackbar.make(
                 requireContext(),
                 viewBinding.root,
-                "Плейлист ${viewBinding.newPlaylistNameEditText.text} создан",
+                resources.getString(
+                    R.string.create_playlist_success_toast,
+                    viewBinding.newPlaylistNameEditText.text
+                ),
                 Snackbar.LENGTH_SHORT
             )
             snackBar.setBackgroundTint(
@@ -135,5 +131,19 @@ class CreatePlaylistFragment : BaseFragment<FragmentCreatePlaylistBinding>() {
     override fun onDestroyView() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         super.onDestroyView()
+    }
+
+    private fun handleWarningDialog() {
+        with(viewBinding) {
+            if (
+                !newPlaylistNameEditText.text.isNullOrBlank() ||
+                viewModel.currentPlaylistCover.value != null ||
+                !newPlaylistDescriptionEditText.text.isNullOrBlank()
+            ) {
+                alertDialog.show()
+            } else {
+                this@CreatePlaylistFragment.findNavController().popBackStack()
+            }
+        }
     }
 }

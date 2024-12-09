@@ -7,10 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlist_maker.domain.player.interactor.PlayerInteractor
 import com.example.playlist_maker.domain.prefs.dto.Track
 import com.example.playlist_maker.presentation.player.dto.PlayerStateUI
+import com.example.playlist_maker.presentation.player.dto.PlaylistPlayerItem
 import com.example.playlist_maker.presentation.player.dto.TrackUI
 import com.example.playlist_maker.presentation.player.dto.toDomain
 import com.example.playlist_maker.presentation.player.dto.toPlayerUI
+import com.example.playlist_maker.presentation.player.dto.toPlaylistPlayerUI
+import com.example.playlist_maker.utils.SingleLiveEvent
 import com.example.playlist_maker.utils.Timer
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
@@ -21,6 +26,9 @@ class PlayerViewModel(
     private var _currentState: MutableLiveData<State> = MutableLiveData(State.default())
     val currentState: LiveData<State>
         get() = _currentState
+
+    private var _playlistEvent: SingleLiveEvent<Triple<Boolean, String, Long>> = SingleLiveEvent()
+    val playlistEvent = _playlistEvent
 
     fun initialize(item: Track) {
         trackDomain = item
@@ -64,10 +72,16 @@ class PlayerViewModel(
         }
     }
 
-    fun toggleMedia() {
-        val state = _currentState.value ?: return
-        val isInMedia = !state.isInMedia
-        _currentState.value = _currentState.value?.copy(isInMedia = isInMedia)
+    fun showPlaylists() {
+        viewModelScope.launch {
+            loadPlaylists().collect {
+                _currentState.value = _currentState.value?.copy(playlists = it)
+            }
+        }
+    }
+
+    fun toggleMedia(event: Boolean) {
+        _currentState.value = _currentState.value?.copy(isInMedia = event)
     }
 
     fun toggleFavourite() {
@@ -87,12 +101,34 @@ class PlayerViewModel(
         }
     }
 
+    fun handleItemClick(item: PlaylistPlayerItem) {
+        if (trackDomain != null) {
+            viewModelScope.launch {
+                _playlistEvent.value =
+                    Triple(
+                        playerInteractor.tryToAddTrackToPlaylist(
+                            item.id,
+                            trackDomain!!
+                        ),
+                        item.name,
+                        System.currentTimeMillis()
+                    )
+            }
+        }
+    }
+
+    private suspend fun loadPlaylists(): Flow<List<PlaylistPlayerItem>> {
+        return playerInteractor.loadPlaylists().map { list -> list.map { it.toPlaylistPlayerUI() } }
+    }
+
     private fun updateDatabase(state: State) {
         viewModelScope.launch {
             if (state.isFavourite) {
                 playerInteractor.deleteTrackFromFavourite(trackDomain!!)
             } else {
-                playerInteractor.addTrackToFavourite(trackDomain!!)
+                playerInteractor.addTrackToFavourite(
+                    trackDomain!!.copy(timestampFavourite = System.currentTimeMillis(), isFavourite = true)
+                )
             }
         }
     }
@@ -160,7 +196,8 @@ class PlayerViewModel(
         var isFavourite: Boolean = false,
         var isInMedia: Boolean = false,
         var timeLeft: String,
-        var track: TrackUI? = null
+        var track: TrackUI? = null,
+        var playlists: List<PlaylistPlayerItem> = listOf()
     ) {
         companion object {
             fun default(): State {
