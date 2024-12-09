@@ -1,9 +1,8 @@
-package com.example.playlist_maker.data.prefs.repository
+package com.example.playlist_maker.data.storage.repository
 
-
-import com.example.playlist_maker.data.prefs.dto.toDomain
-import com.example.playlist_maker.data.prefs.dto.toEntity
-import com.example.playlist_maker.data.prefs.service.PrefsStorage
+import com.example.playlist_maker.data.storage.service.PrefsStorage
+import com.example.playlist_maker.data.track.dto.toDomain
+import com.example.playlist_maker.data.track.dto.toEntity
 import com.example.playlist_maker.domain.prefs.dto.Track
 import com.example.playlist_maker.domain.prefs.repository_api.PrefsRepository
 

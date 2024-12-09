@@ -8,6 +8,5 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.example.playlist_maker.presentation.main.ui.MainFragment"
-        tools:layout="@layout/fragment_main">
-    </fragment>
+        tools:layout="@layout/fragment_main" />
 </navigation>

@@ -1,4 +1,4 @@
-package com.example.playlist_maker.data.prefs.dto
+package com.example.playlist_maker.data.track.dto
 
 data class TrackEntity(
     val trackId: String,

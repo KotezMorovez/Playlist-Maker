@@ -8,7 +8,7 @@
         <item name="colorOnPrimary">@color/yp_black</item>
         <item name="colorOnSurface">@color/yp_blue</item>
         <item name="colorOnSecondary">@color/yp_text_gray</item>
-
+        <item name="android:alertDialogTheme">@style/CustomAlert</item>
         <item name="switchStyle">@style/Widget.App.Switch</item>
     </style>
 

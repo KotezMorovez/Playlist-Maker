@@ -7,7 +7,10 @@
     <color name="icon_navigation">@color/yp_black</color>
     <color name="switch_track">#7A9FBBF3</color>
     <color name="bnv_divider">@color/yp_white</color>
-    
+    <color name="snackbar_bg">@color/yp_black</color>
+    <color name="snackbar_text">@color/yp_white</color>
+    <color name="player_dim">@color/yp_black</color>
+
     <color name="yp_blue">#FF3772E7</color>
     <color name="yp_blue_light">#FF9FBBF3</color>
     <color name="yp_black">#FF1A1B22</color>

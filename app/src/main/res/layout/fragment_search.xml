@@ -10,7 +10,7 @@
         android:id="@+id/searchToolbar"
         style="@style/Toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"/>
+        android:layout_height="?actionBarSize" />
 
     <LinearLayout
         android:id="@+id/searchField"
@@ -47,7 +47,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        
+
         <ProgressBar
             android:id="@+id/searchLoaderProgressBar"
             android:layout_width="44dp"
@@ -55,7 +55,7 @@
             android:layout_marginTop="140dp"
             android:indeterminateTint="@color/yp_blue"
             android:layout_gravity="center_horizontal"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchRecyclerView"
@@ -148,7 +148,7 @@
                 android:id="@+id/historyRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/clearHistoryButton"

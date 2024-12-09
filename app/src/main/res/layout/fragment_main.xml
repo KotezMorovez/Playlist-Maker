@@ -13,13 +13,13 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/bottom_nav_graph"/>
+        app:navGraph="@navigation/bottom_nav_graph" />
 
     <View
         android:id="@+id/mainBNVDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/yp_white"/>
+        android:background="@color/yp_white" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mainBottomNavigationView"
@@ -28,5 +28,5 @@
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@drawable/bnv_selector_color"
         app:itemTextColor="@drawable/bnv_selector_color"
-        android:background="@color/secondary"/>
+        android:background="@color/secondary" />
 </LinearLayout>
