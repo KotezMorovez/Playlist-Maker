@@ -28,11 +28,16 @@ class ImageStorageImpl(private val context: Context) : ImageStorage {
         val imageUri = root + "/" + UUID.randomUUID() + ".png"
         val dir = File(root)
         dir.mkdir()
+        bitmap.byteCount
 
         FileOutputStream(imageUri).use { out ->
             bitmap.compress(
                 Bitmap.CompressFormat.PNG,
-                100,
+                if (bitmap.byteCount < IMAGE_SIZE_LIMIT) {
+                    100
+                } else {
+                    (IMAGE_SIZE_LIMIT / bitmap.byteCount) * 100
+                },
                 out
             )
         }
@@ -54,5 +59,9 @@ class ImageStorageImpl(private val context: Context) : ImageStorage {
             e.printStackTrace()
         }
         return bitmap
+    }
+
+    companion object {
+        private const val IMAGE_SIZE_LIMIT = 5_242_880
     }
 }

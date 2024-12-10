@@ -9,7 +9,9 @@ import com.example.playlist_maker.domain.library.dto.Playlist
 import com.example.playlist_maker.domain.library.interactor.PlaylistInteractor
 import com.example.playlist_maker.domain.prefs.interactor.ImageInteractor
 import com.example.playlist_maker.utils.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 class CreatePlaylistViewModel(
@@ -23,10 +25,14 @@ class CreatePlaylistViewModel(
     val creationEvent: LiveData<String> = _creationEvent
 
     fun saveImageUri(uri: Uri) {
-        val newUri = coverInteractor.addImageToStorage(uri)
+        viewModelScope.launch(Dispatchers.IO) {
+            val newUri = coverInteractor.addImageToStorage(uri)
 
-        if (newUri != null) {
-            _currentPlaylistCover.value = newUri.toString()
+            if (newUri != null) {
+                withContext(Dispatchers.Main){
+                    _currentPlaylistCover.value = newUri.toString()
+                }
+            }
         }
     }
 
