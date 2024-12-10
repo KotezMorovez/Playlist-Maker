@@ -1,7 +1,7 @@
-package com.example.playlist_maker.data.prefs.service
+package com.example.playlist_maker.data.storage.service
 
 import android.content.SharedPreferences
-import com.example.playlist_maker.data.prefs.dto.TrackEntity
+import com.example.playlist_maker.data.track.dto.TrackEntity
 import com.example.playlist_maker.utils.JSONConverter
 
 interface PrefsStorage {

@@ -1,4 +1,4 @@
-package com.example.playlist_maker.data.database
+package com.example.playlist_maker.data.database.track
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -15,9 +15,9 @@ interface TrackDao {
     @Delete(entity = TrackDbEntity::class)
     fun deleteTrack(track: TrackDbEntity)
 
-    @Query("SELECT * FROM favourite_tracks")
-    fun getAllTracks(): Flow<List<TrackDbEntity>>
+    @Query("SELECT * FROM tracks WHERE is_favourite = 1 ORDER BY timestamp_favourite DESC")
+    fun getAllFavouriteTracks(): Flow<List<TrackDbEntity>>
 
-    @Query("SELECT * FROM favourite_tracks WHERE track_id = :id")
-    fun findTrackInTable(id: String): TrackDbEntity?
+    @Query("SELECT * FROM tracks WHERE is_favourite = 1 AND track_id = :id")
+    fun findTrackInFavourites(id: String): TrackDbEntity?
 }

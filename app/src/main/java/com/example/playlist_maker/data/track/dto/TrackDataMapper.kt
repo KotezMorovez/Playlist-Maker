@@ -1,4 +1,4 @@
-package com.example.playlist_maker.data.prefs.dto
+package com.example.playlist_maker.data.track.dto
 
 import com.example.playlist_maker.data.itunes_api.dto.ITunesEntity
 import com.example.playlist_maker.domain.itunes_api.dto.TrackList

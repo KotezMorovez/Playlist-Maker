@@ -18,8 +18,16 @@
         android:id="@+id/playerFragment"
         android:name="com.example.playlist_maker.presentation.player.ui.PlayerFragment"
         tools:layout="@layout/fragment_player">
+        <action
+            android:id="@+id/action_playerFragment_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistPlayerFragment" />
         <argument
             android:name="track"
             app:argType="com.example.playlist_maker.domain.prefs.dto.Track" />
     </fragment>
+
+    <fragment
+        android:id="@+id/createPlaylistPlayerFragment"
+        android:name="com.example.playlist_maker.presentation.playlist_create.ui.CreatePlaylistFragment"
+        tools:layout="@layout/fragment_create_playlist" />
 </navigation>

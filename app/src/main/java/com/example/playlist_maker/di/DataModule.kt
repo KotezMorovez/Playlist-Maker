@@ -3,14 +3,18 @@ package com.example.playlist_maker.di
 import android.content.Context
 import androidx.room.Room
 import com.example.playlist_maker.data.database.AppDatabase
-import com.example.playlist_maker.data.database.TrackDao
+import com.example.playlist_maker.data.database.playlist.PlaylistDao
+import com.example.playlist_maker.data.database.playlist_to_track.PlaylistToTrackDao
+import com.example.playlist_maker.data.database.track.TrackDao
 import com.example.playlist_maker.data.itunes_api.service.ITunesSearchAPI
 import com.example.playlist_maker.data.itunes_api.service.SearchService
 import com.example.playlist_maker.data.itunes_api.service.SearchServiceImpl
 import com.example.playlist_maker.data.player.service.PlayerService
 import com.example.playlist_maker.data.player.service.PlayerServiceImpl
-import com.example.playlist_maker.data.prefs.service.PrefsStorage
-import com.example.playlist_maker.data.prefs.service.PrefsStorageImpl
+import com.example.playlist_maker.data.storage.service.ImageStorage
+import com.example.playlist_maker.data.storage.service.ImageStorageImpl
+import com.example.playlist_maker.data.storage.service.PrefsStorage
+import com.example.playlist_maker.data.storage.service.PrefsStorageImpl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -46,6 +50,10 @@ val dataModule = module {
         SearchServiceImpl(get())
     }
 
+    single<ImageStorage> {
+        ImageStorageImpl(androidContext())
+    }
+
     single<AppDatabase> {
         Room.databaseBuilder(
             androidContext(),
@@ -57,6 +65,16 @@ val dataModule = module {
     single<TrackDao> {
         val db: AppDatabase = get()
         db.trackDao()
+    }
+
+    single<PlaylistDao> {
+        val db: AppDatabase = get()
+        db.playlistDao()
+    }
+
+    single<PlaylistToTrackDao> {
+        val db: AppDatabase = get()
+        db.playlistToTrackDao()
     }
 }
 
