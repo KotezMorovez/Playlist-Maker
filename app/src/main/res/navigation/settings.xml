@@ -8,6 +8,5 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.playlist_maker.presentation.settings.ui.SettingsFragment"
-        tools:layout="@layout/fragment_settings">
-    </fragment>
+        tools:layout="@layout/fragment_settings" />
 </navigation>
