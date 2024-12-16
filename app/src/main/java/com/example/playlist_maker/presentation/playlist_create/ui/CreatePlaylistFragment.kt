@@ -26,12 +26,12 @@ class CreatePlaylistFragment : BaseFragment<FragmentCreatePlaylistBinding>() {
     private lateinit var galleryHandler: GalleryHandler
     private val alertDialog by lazy {
         MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlert)
-            .setTitle(resources.getText(R.string.alert_dialog_title))
-            .setMessage(resources.getText(R.string.alert_dialog_body))
-            .setNegativeButton(resources.getText(R.string.alert_dialog_negative_button)) { dialog, _ ->
+            .setTitle(resources.getText(R.string.create_playlist_alert_dialog_title))
+            .setMessage(resources.getText(R.string.create_playlist_alert_dialog_body))
+            .setNegativeButton(resources.getText(R.string.create_playlist_alert_dialog_negative_button)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(resources.getText(R.string.alert_dialog_positive_button)) { _, _ ->
+            .setPositiveButton(resources.getText(R.string.create_playlist_alert_dialog_positive_button)) { _, _ ->
                 this@CreatePlaylistFragment.findNavController().popBackStack()
             }
     }
@@ -40,9 +40,7 @@ class CreatePlaylistFragment : BaseFragment<FragmentCreatePlaylistBinding>() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!s.isNullOrBlank()) {
-                    viewBinding.newPlaylistButton.isEnabled = s.isNotEmpty()
-                }
+                viewBinding.newPlaylistButton.isEnabled = !s.isNullOrBlank()
             }
 
             override fun afterTextChanged(s: Editable?) {}

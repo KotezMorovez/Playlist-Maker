@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menuBottomSheetContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet"
+    android:paddingHorizontal="@dimen/padding_4x"
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <View
+        android:id="@+id/resizeHandleView"
+        android:layout_width="50dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_2x"
+        android:background="@drawable/resize_handle"
+        android:backgroundTint="@color/playlist_resize_handle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/coverImageView"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/resizeHandleView"
+        tools:src="@drawable/placeholder_album" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_2x"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/coverImageView"
+        app:layout_constraintStart_toEndOf="@+id/coverImageView"
+        app:layout_constraintTop_toTopOf="@+id/coverImageView">
+
+        <TextView
+            android:id="@+id/nameTextView"
+            style="@style/playlistMenuButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/coverImageView"
+            app:layout_constraintTop_toTopOf="@id/coverImageView"
+            tools:text="123123123123123" />
+
+        <TextView
+            android:id="@+id/trackCountTextView"
+            style="@style/playlistMenuButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/playlist_text_secondary"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@+id/coverImageView"
+            app:layout_constraintStart_toEndOf="@id/coverImageView"
+            app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+            tools:text="12311545456465456456465456" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/shareTextView"
+        style="@style/playlistMenuButtons"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/playlist_share_button"
+        app:layout_constraintTop_toBottomOf="@+id/coverImageView" />
+
+    <TextView
+        android:id="@+id/editTextView"
+        style="@style/playlistMenuButtons"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/playlist_edit_button"
+        app:layout_constraintTop_toBottomOf="@id/shareTextView" />
+
+    <TextView
+        android:id="@+id/deleteTextView"
+        style="@style/playlistMenuButtons"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/playlist_delete_button"
+        app:layout_constraintTop_toBottomOf="@id/editTextView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

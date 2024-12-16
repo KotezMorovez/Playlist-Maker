@@ -10,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlist_maker.R
 import com.example.playlist_maker.databinding.FragmentLibraryPlaylistsPageBinding
-import com.example.playlist_maker.domain.library.dto.Playlist
 import com.example.playlist_maker.presentation.common.BaseFragment
 import com.example.playlist_maker.presentation.library.dto.PlaylistLibraryItem
 import com.example.playlist_maker.presentation.library.ui.adapters.LibraryPlaylistAdapter
@@ -92,12 +91,12 @@ class LibraryPlaylistsPageFragment : BaseFragment<FragmentLibraryPlaylistsPageBi
         }
     }
 
-    private fun applyEvent(playlist: Playlist) {
+    private fun applyEvent(id: String) {
         val bundle = bundleOf()
-        bundle.putSerializable(PLAYLIST_ID, playlist.id)
+        bundle.putSerializable(PLAYLIST_ID, id)
 
         this@LibraryPlaylistsPageFragment.findNavController()
-            .navigate(R.id.action_libraryFavTracksPageFragment_to_playerFragment, bundle)
+            .navigate(R.id.action_libraryPlaylistsPageFragment_to_playlistFragment, bundle)
     }
 
     companion object {

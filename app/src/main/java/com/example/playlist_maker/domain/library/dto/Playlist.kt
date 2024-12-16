@@ -6,5 +6,6 @@ data class Playlist(
     val name: String,
     val description: String,
     val tracksCount: Int,
+    val totalTime: Int = 0,
     val timestamp: Long
 )

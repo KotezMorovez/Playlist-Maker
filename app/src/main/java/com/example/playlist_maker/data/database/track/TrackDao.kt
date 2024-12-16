@@ -13,11 +13,11 @@ interface TrackDao {
     suspend fun addTrack(track: TrackDbEntity)
 
     @Delete(entity = TrackDbEntity::class)
-    fun deleteTrack(track: TrackDbEntity)
+    suspend fun deleteTrack(track: TrackDbEntity)
 
     @Query("SELECT * FROM tracks WHERE is_favourite = 1 ORDER BY timestamp_favourite DESC")
     fun getAllFavouriteTracks(): Flow<List<TrackDbEntity>>
 
     @Query("SELECT * FROM tracks WHERE is_favourite = 1 AND track_id = :id")
-    fun findTrackInFavourites(id: String): TrackDbEntity?
+    suspend fun findTrackInFavourites(id: String): TrackDbEntity?
 }

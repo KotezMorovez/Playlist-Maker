@@ -146,4 +146,10 @@
         <item name="android:textColorPrimary">@color/yp_white</item>
         <item name="android:colorAccent">@color/yp_blue</item>
     </style>
+
+    <style name="playlistMenuButtons">
+        <item name="android:textColor">@color/yp_white</item>
+        <item name="android:fontFamily">@font/ys_text_regular</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

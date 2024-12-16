@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/playlistContent"
+        layout="@layout/fragment_playlist_content" />
+
+    <include
+        android:id="@+id/bottomSheet"
+        layout="@layout/fragment_playlist_track_list_bottom_sheet" />
+
+    <FrameLayout
+        android:id="@+id/blackout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="@color/yp_black"
+        android:visibility="visible" />
+
+    <include
+        android:id="@+id/menuBottomSheet"
+        layout="@layout/fragment_playlist_menu_bottom_sheet" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

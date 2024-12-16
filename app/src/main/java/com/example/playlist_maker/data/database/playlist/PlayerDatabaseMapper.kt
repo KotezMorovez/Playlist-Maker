@@ -12,13 +12,14 @@ fun Playlist.toDbEntity(): PlaylistDbEntity {
     )
 }
 
-fun playlistDbEntityToDomain(entity: PlaylistDbEntity, count: Int): Playlist {
+fun playlistDbEntityToDomain(entity: PlaylistDbEntity, count: Int, totalTime: Int = 0): Playlist {
     return Playlist(
         id = entity.id,
         name = entity.name,
         imageUri = entity.imageUri,
         description = entity.description,
         tracksCount = count,
-        timestamp = entity.timestamp
+        timestamp = entity.timestamp,
+        totalTime = totalTime
     )
 }
