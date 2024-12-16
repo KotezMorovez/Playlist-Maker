@@ -48,20 +48,44 @@
     <string name="player_header">Добавить в плейлист</string>
     <string name="player_new_playlist_button">Новый плейлист</string>
 
-    <string name="alert_dialog_title">Завершить создание плейлиста?</string>
-    <string name="alert_dialog_body">Все несохраненные данные будут потеряны</string>
-    <string name="alert_dialog_negative_button">Отмена</string>
-    <string name="alert_dialog_positive_button">Завершить</string>
-
+    <string name="create_playlist_alert_dialog_title">Завершить создание плейлиста?</string>
+    <string name="create_playlist_alert_dialog_body">Все несохраненные данные будут потеряны</string>
+    <string name="create_playlist_alert_dialog_negative_button">Отмена</string>
+    <string name="create_playlist_alert_dialog_positive_button">Завершить</string>
     <string name="create_playlist_success_toast">Плейлист %1$s создан</string>
+
+    <string name="playlist_track_alert_dialog_title">Удалить трек</string>
+    <string name="playlist_track_alert_dialog_body">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="playlist_track_alert_dialog_negative_button">Отмена</string>
+    <string name="playlist_track_alert_dialog_positive_button">Удалить</string>
+
+    <string name="playlist_alert_dialog_title">Удалить плейлист</string>
+    <string name="playlist_alert_dialog_body">Хотите удалить плейлист \"%1$s\"?</string>
+    <string name="playlist_alert_dialog_negative_button">Нет</string>
+    <string name="playlist_alert_dialog_positive_button">Да</string>
+
+    <string name="edit_playlist_title">Редактировать плейлист</string>
+    <string name="edit_playlist_button">Сохранить</string>
 
     <string name="playlist_add_track_to_playlist_success_toast">Добавлено в плейлист %1$s</string>
     <string name="playlist_add_track_to_playlist_failure_toast">Трек уже добавлен в плейлист %1$s</string>
+    <string name="playlist_no_tracks">В этом плейлисте нет треков</string>
+    <string name="playlist_no_tracks_toast">В этом плейлисте нет списка треков, которыми можно поделиться</string>
+    <string name="playlist_share_button">Поделиться</string>
+    <string name="playlist_edit_button">Редактировать информацию</string>
+    <string name="playlist_delete_button">Удалить плейлист</string>
 
     <plurals name="tracks">
         <item quantity="one">трек</item>
         <item quantity="two">трека</item>
         <item quantity="few">трека</item>
         <item quantity="other">треков</item>
+    </plurals>
+    
+    <plurals name="minutes">
+        <item quantity="one">минута</item>
+        <item quantity="two">минуты</item>
+        <item quantity="few">минуты</item>
+        <item quantity="other">минут</item>
     </plurals>
 </resources>

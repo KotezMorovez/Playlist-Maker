@@ -20,8 +20,8 @@ class LibraryPlaylistsPageViewModel(
     val currentState: LiveData<State>
         get() = _currentState
 
-    private val _navigationEvent = SingleLiveEvent<Playlist>()
-    val navigationEvent: LiveData<Playlist>
+    private val _navigationEvent = SingleLiveEvent<String>()
+    val navigationEvent: LiveData<String>
         get() = _navigationEvent
 
 
@@ -34,12 +34,16 @@ class LibraryPlaylistsPageViewModel(
                     _currentState.value = State.Data(playlistDomainList.map { playlist ->
                         playlist.toPlaylistLibraryUI()
                     })
+                } else {
+                    _currentState.value = State.NoData
                 }
             }
         }
     }
 
-    fun handleItemClick(item: PlaylistLibraryItem) { /*TODO*/ }
+    fun handleItemClick(item: PlaylistLibraryItem) {
+        _navigationEvent.value = item.id
+    }
 
     sealed class State {
         class Data(val list: List<PlaylistLibraryItem>) : State()

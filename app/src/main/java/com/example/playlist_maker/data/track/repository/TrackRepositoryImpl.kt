@@ -53,14 +53,16 @@ class TrackRepositoryImpl(
     }
 
     override suspend fun addTrackToPlaylist(playlistId: String, track: Track) {
-        playlistToTrackDao.addTrackToPlaylist(
-            PlaylistToTrackDbEntity(
-                id = 0,
-                playlistId = playlistId,
-                trackId = track.trackId,
-                timestamp = System.currentTimeMillis()
+        withContext(Dispatchers.IO){
+            playlistToTrackDao.addTrackToPlaylist(
+                PlaylistToTrackDbEntity(
+                    id = 0,
+                    playlistId = playlistId,
+                    trackId = track.trackId,
+                    timestamp = System.currentTimeMillis()
+                )
             )
-        )
-        trackDao.addTrack(track.toDatabase())
+            trackDao.addTrack(track.toDatabase())
+        }
     }
 }

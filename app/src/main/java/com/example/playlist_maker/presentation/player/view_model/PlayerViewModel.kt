@@ -123,13 +123,12 @@ class PlayerViewModel(
 
     private fun updateDatabase(state: State) {
         viewModelScope.launch {
-            if (state.isFavourite) {
-                playerInteractor.deleteTrackFromFavourite(trackDomain!!)
-            } else {
-                playerInteractor.addTrackToFavourite(
-                    trackDomain!!.copy(timestampFavourite = System.currentTimeMillis(), isFavourite = true)
+            trackDomain =
+                trackDomain!!.copy(
+                    timestampFavourite = System.currentTimeMillis(),
+                    isFavourite = !state.isFavourite
                 )
-            }
+            playerInteractor.addTrackToFavourite(trackDomain!!)
         }
     }
 

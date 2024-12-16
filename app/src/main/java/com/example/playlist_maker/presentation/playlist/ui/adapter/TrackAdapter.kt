@@ -1,4 +1,4 @@
-package com.example.playlist_maker.presentation.search.ui.adapter
+package com.example.playlist_maker.presentation.playlist.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -11,9 +11,10 @@ import com.example.playlist_maker.databinding.ItemTrackBinding
 import com.example.playlist_maker.presentation.search.dto.TrackItem
 import com.example.playlist_maker.utils.dpToPx
 
-class SearchAdapter(
+class TrackAdapter(
     private val onItemClickListener: (item: TrackItem) -> Unit,
-) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+    private val onItemLongClickListener: (item: TrackItem) -> Unit,
+) : RecyclerView.Adapter<TrackAdapter.ViewHolder>() {
     private var items: List<TrackItem> = listOf()
 
     @SuppressLint("NotifyDataSetChanged")
@@ -56,6 +57,10 @@ class SearchAdapter(
 
                 root.setOnClickListener {
                     onItemClickListener.invoke(item)
+                }
+                root.setOnLongClickListener {
+                    onItemLongClickListener.invoke(item)
+                    true
                 }
             }
         }
